@@ -226,7 +226,7 @@ define KernelPackage/drm
   TITLE:=Direct Rendering Manager (DRM) support
   HIDDEN:=1
   DEPENDS:=+kmod-dma-buf +kmod-i2c-core +PACKAGE_kmod-backlight:kmod-backlight \
-	+(LINUX_5_15):kmod-fb
+	+((LINUX_5_15||LINUX_6_0)):kmod-fb
   KCONFIG:=CONFIG_DRM
   FILES:= \
 	$(LINUX_DIR)/drivers/gpu/drm/drm.ko \
@@ -418,6 +418,7 @@ define KernelPackage/video-core
   FILES:= \
 	$(LINUX_DIR)/drivers/media/$(V4L2_DIR)/videodev.ko
   AUTOLOAD:=$(call AutoLoad,60, videodev v4l2-common)
+  FILES+=$(LINUX_DIR)/drivers/media/mc/mc.ko
 endef
 
 define KernelPackage/video-core/description

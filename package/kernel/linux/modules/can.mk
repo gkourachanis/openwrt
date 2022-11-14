@@ -182,7 +182,7 @@ $(eval $(call KernelPackage,can-raw))
 define KernelPackage/can-slcan
   TITLE:=Serial / USB serial CAN Adaptors (slcan)
   KCONFIG:=CONFIG_CAN_SLCAN
-  FILES:=$(LINUX_DIR)/drivers/net/can/slcan.ko
+  FILES:=$(LINUX_DIR)/drivers/net/can/slcan/slcan.ko
   AUTOLOAD:=$(call AutoProbe,slcan)
   $(call AddDepends/can)
 endef

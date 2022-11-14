@@ -104,6 +104,7 @@ define KernelPackage/i2c-designware-pci
   $(call i2c_defaults,$(I2C_DWPCI_MODULES),59)
   TITLE:=Synopsys DesignWare PCI
   DEPENDS:=+kmod-i2c-designware-core
+  FILES+=$(LINUX_DIR)/drivers/i2c/busses/i2c-ccgx-ucsi.ko
 endef
 
 define KernelPackage/i2c-designware-pci/description

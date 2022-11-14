@@ -440,6 +440,7 @@ define KernelPackage/usb-dwc2
 	$(LINUX_DIR)/drivers/usb/dwc2/dwc2.ko
   AUTOLOAD:=$(call AutoLoad,54,dwc2,1)
   $(call AddDepends/usb)
+  FILES+=$(LINUX_DIR)/drivers/usb/gadget/udc/udc-core.ko
 endef
 
 define KernelPackage/usb-dwc2/description
@@ -766,6 +767,7 @@ define KernelPackage/usb-serial-mos7720
   FILES:=$(LINUX_DIR)/drivers/usb/serial/mos7720.ko
   AUTOLOAD:=$(call AutoProbe,mos7720)
   $(call AddDepends/usb-serial)
+  FILES+=$(LINUX_DIR)/drivers/parport/parport.ko
 endef
 
 define KernelPackage/usb-serial-mos7720/description
@@ -1155,7 +1157,7 @@ $(eval $(call KernelPackage,usb-net-aqc111))
 
 define KernelPackage/usb-net-asix
   TITLE:=Kernel module for USB-to-Ethernet Asix convertors
-  DEPENDS:=+kmod-libphy +LINUX_5_15:kmod-net-selftests +LINUX_5_15:kmod-mdio-devres +kmod-phy-ax88796b
+  DEPENDS:=+kmod-libphy +(LINUX_5_15||LINUX_6_0):kmod-net-selftests +(LINUX_5_15||LINUX_6_0):kmod-mdio-devres +kmod-phy-ax88796b
   KCONFIG:=CONFIG_USB_NET_AX8817X
   FILES:=$(LINUX_DIR)/drivers/$(USBNET_DIR)/asix.ko
   AUTOLOAD:=$(call AutoProbe,asix)
