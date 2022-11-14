@@ -1,3 +1,19 @@
+## About this fork
+
+The patches that I've added on the v6.0.8 apply properly, but I'm not sure if they are needed.
+Plus I only care about x86 and most of them I haven't given attention on what they do and therefore I don't use them at all.
+The Makefiles of the modules that I've changed, I've done so with the help of the following script.
+The modules compile without errors.
+
+* [the gist - use at your own risk](https://gist.github.com/gkourachanis/b38c17448e68488fb2fcb1fa41330e29)
+
+Also, I've used this .config file for the kernel and modules compilation.
+I don't compile the whole OpenWrt OS.
+
+* [.config](https://gist.github.com/gkourachanis/b332097e9448c387a2ff778b1dbb7787)
+
+## 
+
 ![OpenWrt logo](include/logo.png)
 
 OpenWrt Project is a Linux operating system targeting embedded devices. Instead
