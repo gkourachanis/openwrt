@@ -36,7 +36,7 @@ TARGET_CFLAGS += \
 TARGET_LDFLAGS += -flto -fuse-linker-plugin
 
 CMAKE_OPTIONS += \
-	-DLIBNL_LIBS=-lnl-tiny \
+	-DLIBNL_LIBS=$(shell find $(BUILD_DIR)/libnl-tiny*/ -name libnl-tiny.so -print -quit) \
 	-DDEBUG=1
 
 define Package/netifd/install
