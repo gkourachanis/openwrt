@@ -3,14 +3,14 @@
 # Copyright (C) 2006-2020 OpenWrt.org
 
 ifdef CONFIG_STRIP_KERNEL_EXPORTS
-  KERNEL_MAKEOPTS_IMAGE += \
-	EXTRA_LDSFLAGS="-I$(KERNEL_BUILD_DIR) -include symtab.h"
+	KERNEL_MAKEOPTS_IMAGE += \
+		EXTRA_LDSFLAGS="-I$(KERNEL_BUILD_DIR) -include symtab.h"
 endif
 
 INITRAMFS_EXTRA_FILES ?= $(GENERIC_PLATFORM_DIR)/image/initramfs-base-files.txt
 
 ifneq (,$(KERNEL_CC))
-  KERNEL_MAKEOPTS += CC="$(KERNEL_CC)"
+	KERNEL_MAKEOPTS += CC="$(KERNEL_CC)"
 endif
 
 export HOST_EXTRACFLAGS=-I$(STAGING_DIR_HOST)/include
@@ -19,9 +19,9 @@ export HOST_EXTRACFLAGS=-I$(STAGING_DIR_HOST)/include
 Kernel/Patch:=$(Kernel/Patch/Default)
 
 ifneq (,$(findstring .xz,$(LINUX_SOURCE)))
-  LINUX_CAT:=xzcat
+	LINUX_CAT:=xzcat
 else
-  LINUX_CAT:=gzip -dc
+	LINUX_CAT:=gzip -dc
 endif
 
 ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
@@ -57,31 +57,33 @@ ifeq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),y)
 	echo 'CONFIG_INITRAMFS_SOURCE=""' >> $(LINUX_DIR)/.config
     endef
   else
-  ifeq ($(strip $(CONFIG_EXTERNAL_CPIO)),"")
-    define Kernel/SetInitramfs/PreConfigure
+    ifeq ($(strip $(CONFIG_EXTERNAL_CPIO)),"")
+      define Kernel/SetInitramfs/PreConfigure
 	grep -v -e INITRAMFS -e CONFIG_RD_ -e CONFIG_BLK_DEV_INITRD $(LINUX_DIR)/.config.old > $(LINUX_DIR)/.config
 	echo 'CONFIG_BLK_DEV_INITRD=y' >> $(LINUX_DIR)/.config
 	echo 'CONFIG_INITRAMFS_SOURCE="$(strip $(TARGET_DIR) $(INITRAMFS_EXTRA_FILES))"' >> $(LINUX_DIR)/.config
-    endef
-  else
-    define Kernel/SetInitramfs/PreConfigure
+      endef
+    else
+      define Kernel/SetInitramfs/PreConfigure
 	grep -v INITRAMFS $(LINUX_DIR)/.config.old > $(LINUX_DIR)/.config
 	echo 'CONFIG_INITRAMFS_SOURCE="$(call qstrip,$(CONFIG_EXTERNAL_CPIO))"' >> $(LINUX_DIR)/.config
-    endef
+      endef
+    endif
   endif
-endif
 
   define Kernel/SetInitramfs
 	rm -f $(LINUX_DIR)/.config.prev
 	mv $(LINUX_DIR)/.config $(LINUX_DIR)/.config.old
 	$(call Kernel/SetInitramfs/PreConfigure)
-  ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE),y)
+    ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE),y)
 	echo 'CONFIG_INITRAMFS_ROOT_UID=$(shell id -u)' >> $(LINUX_DIR)/.config
 	echo 'CONFIG_INITRAMFS_ROOT_GID=$(shell id -g)' >> $(LINUX_DIR)/.config
 	echo "$(if $(CONFIG_TARGET_INITRAMFS_FORCE),CONFIG_INITRAMFS_FORCE=y,# CONFIG_INITRAMFS_FORCE is not set)" >> $(LINUX_DIR)/.config
-  else
+	echo "$(if $(CONFIG_TARGET_INITRAMFS_PRESERVE_MTIME),CONFIG_INITRAMFS_PRESERVE_MTIME=y,# CONFIG_INITRAMFS_PRESERVE_MTIME is not set)" >> $(LINUX_DIR)/.config
+    else
 	echo "# CONFIG_INITRAMFS_FORCE is not set" >> $(LINUX_DIR)/.config
-  endif
+	echo "# CONFIG_INITRAMFS_PRESERVE_MTIME is not set" >> $(LINUX_DIR)/.config
+    endif
 	echo "$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_NONE),CONFIG_INITRAMFS_COMPRESSION_NONE=y,# CONFIG_INITRAMFS_COMPRESSION_NONE is not set)" >> $(LINUX_DIR)/.config
 	echo -e "$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_GZIP),CONFIG_INITRAMFS_COMPRESSION_GZIP=y\nCONFIG_RD_GZIP=y,# CONFIG_INITRAMFS_COMPRESSION_GZIP is not set\n# CONFIG_RD_GZIP is not set)" >> $(LINUX_DIR)/.config
 	echo -e "$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_BZIP2),CONFIG_INITRAMFS_COMPRESSION_BZIP2=y\nCONFIG_RD_BZIP2=y,# CONFIG_INITRAMFS_COMPRESSION_BZIP2 is not set\n# CONFIG_RD_BZIP2 is not set)" >> $(LINUX_DIR)/.config
@@ -99,6 +101,7 @@ define Kernel/SetNoInitramfs
 	grep -v INITRAMFS $(LINUX_DIR)/.config.old > $(LINUX_DIR)/.config.set
 	echo 'CONFIG_INITRAMFS_SOURCE=""' >> $(LINUX_DIR)/.config.set
 	echo '# CONFIG_INITRAMFS_FORCE is not set' >> $(LINUX_DIR)/.config.set
+	echo '# CONFIG_INITRAMFS_PRESERVE_MTIME is not set' >> $(LINUX_DIR)/.config.set
 endef
 
 define Kernel/Configure/Default
@@ -138,7 +141,7 @@ OBJCOPY_STRIP = -R .reginfo -R .notes -R .note -R .comment -R .mdebug -R .note.g
 
 # AMD64 shares the location with x86
 ifeq ($(LINUX_KARCH),x86_64)
-IMAGES_DIR:=../../x86/boot
+	IMAGES_DIR:=../../x86/boot
 endif
 
 define Kernel/CopyImage
@@ -165,17 +168,17 @@ endef
 
 # Here as well, always add "modules", see comment above.
 ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
-define Kernel/CompileImage/Initramfs
+  define Kernel/CompileImage/Initramfs
 	$(call Kernel/Configure/Initramfs)
 	$(CP) $(GENERIC_PLATFORM_DIR)/other-files/init $(TARGET_DIR)/init
 	$(if $(SOURCE_DATE_EPOCH),touch -hcd "@$(SOURCE_DATE_EPOCH)" $(TARGET_DIR) $(TARGET_DIR)/init)
 	rm -rf $(KERNEL_BUILD_DIR)/linux-$(LINUX_VERSION)/usr/initramfs_data.cpio*
-ifeq ($(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE),y)
-ifneq ($(qstrip $(CONFIG_EXTERNAL_CPIO)),)
+    ifeq ($(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE),y)
+      ifneq ($(qstrip $(CONFIG_EXTERNAL_CPIO)),)
 	$(CP) $(CONFIG_EXTERNAL_CPIO) $(KERNEL_BUILD_DIR)/initrd.cpio
-else
+      else
 	( cd $(TARGET_DIR); find . | LC_ALL=C sort | $(STAGING_DIR_HOST)/bin/cpio --reproducible -o -H newc -R 0:0 > $(KERNEL_BUILD_DIR)/initrd.cpio )
-endif
+      endif
 	$(if $(SOURCE_DATE_EPOCH),touch -hcd "@$(SOURCE_DATE_EPOCH)" $(KERNEL_BUILD_DIR)/initrd.cpio)
 	$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_BZIP2),bzip2 -9 -c < $(KERNEL_BUILD_DIR)/initrd.cpio > $(KERNEL_BUILD_DIR)/initrd.cpio.bzip2)
 	$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_GZIP),gzip -n -f -S .gzip -9n $(KERNEL_BUILD_DIR)/initrd.cpio)
@@ -184,13 +187,13 @@ endif
 	$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_XZ),$(STAGING_DIR_HOST)/bin/xz -T$(if $(filter 1,$(NPROC)),2,0) -9 -fz --check=crc32 $(KERNEL_BUILD_DIR)/initrd.cpio)
 # ?	$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_LZ4),)
 	$(if $(CONFIG_TARGET_INITRAMFS_COMPRESSION_ZSTD),$(STAGING_DIR_HOST)/bin/zstd -T0 -f -o $(KERNEL_BUILD_DIR)/initrd.cpio.zstd $(KERNEL_BUILD_DIR)/initrd.cpio)
-endif
+    endif
 	+$(KERNEL_MAKE) $(KERNEL_MAKEOPTS_IMAGE) $(if $(KERNELNAME),$(KERNELNAME),all) modules
 	$(call Kernel/CopyImage,-initramfs)
-endef
+  endef
 else
-define Kernel/CompileImage/Initramfs
-endef
+  define Kernel/CompileImage/Initramfs
+  endef
 endif
 
 define Kernel/Clean/Default
