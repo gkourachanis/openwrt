@@ -64,6 +64,7 @@ define KernelPackage/kvm-amd
   KCONFIG:=CONFIG_KVM_AMD
   FILES:= $(LINUX_DIR)/arch/$(LINUX_KARCH)/kvm/kvm-amd.ko
   AUTOLOAD:=$(call AutoProbe,kvm-amd.ko)
+  FILES+=$(LINUX_DIR)/drivers/crypto/ccp/ccp.ko
 endef
 
 define KernelPackage/kvm-amd/description

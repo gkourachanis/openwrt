@@ -9,9 +9,9 @@ define KernelPackage/iwlwifi
   DEPENDS:= +kmod-mac80211 @PCI_SUPPORT +@DRIVER_11N_SUPPORT +@DRIVER_11AC_SUPPORT +@DRIVER_11AX_SUPPORT
   TITLE:=Intel AGN Wireless support
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/intel/iwlwifi/dvm/iwldvm.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/intel/iwlwifi/mvm/iwlmvm.ko
+	$(LINUX_DIR)/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko \
+	$(LINUX_DIR)/drivers/net/wireless/intel/iwlwifi/dvm/iwldvm.ko \
+	$(LINUX_DIR)/drivers/net/wireless/intel/iwlwifi/mvm/iwlmvm.ko
   AUTOLOAD:=$(call AutoProbe,iwlwifi iwldvm iwlmvm)
   MENU:=1
 endef

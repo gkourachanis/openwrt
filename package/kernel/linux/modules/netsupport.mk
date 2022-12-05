@@ -739,17 +739,23 @@ endef
 $(eval $(call KernelPackage,sched-act-police))
 
 
+define KernelPackage/psample
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Packet-sampling netlink channel
+  KCONFIG:=CONFIG_PSAMPLE
+  FILES:=$(LINUX_DIR)/net/psample/psample.ko
+  AUTOLOAD:=$(call AutoProbe,psample)
+endef
+
+$(eval $(call KernelPackage,psample))
+
 define KernelPackage/sched-act-sample
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=Traffic Sampling
-  DEPENDS:=+kmod-sched-core
-  KCONFIG:= \
-	CONFIG_NET_ACT_SAMPLE \
-	CONFIG_PSAMPLE
-  FILES:= \
-	$(LINUX_DIR)/net/psample/psample.ko \
-	$(LINUX_DIR)/net/sched/act_sample.ko
-  AUTOLOAD:=$(call AutoProbe,act_sample psample)
+  DEPENDS:=+kmod-sched-core +kmod-psample
+  KCONFIG:=CONFIG_NET_ACT_SAMPLE
+  FILES:=$(LINUX_DIR)/net/sched/act_sample.ko
+  AUTOLOAD:=$(call AutoProbe,act_sample)
 endef
 
 define KernelPackage/sched-act-sample/description
@@ -1256,6 +1262,8 @@ define KernelPackage/rxrpc
 	$(LINUX_DIR)/net/rxrpc/rxrpc.ko
   AUTOLOAD:=$(call AutoLoad,30,rxrpc.ko)
   DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt
+  FILES+=$(LINUX_DIR)/net/ipv4/udp_tunnel.ko
+  FILES+=$(LINUX_DIR)/net/ipv6/ip6_udp_tunnel.ko
 endef
 
 define KernelPackage/rxrpc/description

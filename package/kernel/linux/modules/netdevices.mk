@@ -247,6 +247,9 @@ define KernelPackage/phy-broadcom
    DEPENDS:=+kmod-libphy +kmod-phylib-broadcom
    FILES:=$(LINUX_DIR)/drivers/net/phy/broadcom.ko
    AUTOLOAD:=$(call AutoLoad,18,broadcom,1)
+  FILES+=$(LINUX_DIR)/drivers/net/phy/bcm-phy-ptp.ko
+  FILES+=$(LINUX_DIR)/drivers/ptp/ptp.ko
+  FILES+=$(LINUX_DIR)/drivers/pps/pps_core.ko
 endef
 
 define KernelPackage/phy-broadcom/description
@@ -355,12 +358,23 @@ endef
 
 $(eval $(call KernelPackage,swconfig))
 
+define KernelPackage/dsa
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Distributed Switch Architecture
+  DEPENDS:= +kmod-bridge +kmod-phylink
+  KCONFIG:=CONFIG_NET_DSA
+  FILES:=$(LINUX_DIR)/net/dsa/dsa_core.ko
+  AUTOLOAD:=$(call AutoLoad,42,dsa)
+endef
+
+$(eval $(call KernelPackage,dsa))
+
 define KernelPackage/switch-bcm53xx
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Broadcom bcm53xx switch support
-  DEPENDS:=+kmod-swconfig
-  KCONFIG:=CONFIG_SWCONFIG_B53
-  FILES:=$(LINUX_DIR)/drivers/net/phy/b53/b53_common.ko
+  DEPENDS:=+kmod-swconfig +kmod-dsa
+  KCONFIG:=CONFIG_B53
+  FILES:=$(LINUX_DIR)/drivers/net/dsa/b53/b53_common.ko
   AUTOLOAD:=$(call AutoLoad,42,b53_common)
 endef
 
@@ -374,8 +388,8 @@ define KernelPackage/switch-bcm53xx-mdio
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Broadcom bcm53xx switch MDIO support
   DEPENDS:=+kmod-switch-bcm53xx
-  KCONFIG:=CONFIG_SWCONFIG_B53_PHY_DRIVER
-  FILES:=$(LINUX_DIR)/drivers/net/phy/b53/b53_mdio.ko
+  KCONFIG:=CONFIG_B53_MDIO_DRIVER
+  FILES:=$(LINUX_DIR)/drivers/net/dsa/b53/b53_mdio.ko
   AUTOLOAD:=$(call AutoLoad,42,b53_mdio)
 endef
 
@@ -760,17 +774,25 @@ endef
 
 $(eval $(call KernelPackage,e1000e))
 
+define KernelPackage/dca
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=DCA server configuration
+  FILES:=$(LINUX_DIR)/drivers/dca/dca.ko
+  KCONFIG:=CONFIG_DCA
+  AUTOLOAD:=$(call AutoLoad,35,dca)
+endef
+
+$(eval $(call KernelPackage,dca))
 
 define KernelPackage/igb
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Intel(R) 82575/82576 PCI-Express Gigabit Ethernet support
-  DEPENDS:=@PCI_SUPPORT +kmod-i2c-core +kmod-i2c-algo-bit +kmod-ptp +kmod-hwmon-core
+  DEPENDS:=@PCI_SUPPORT +kmod-i2c-core +kmod-i2c-algo-bit +kmod-ptp +kmod-hwmon-core +kmod-dca
   KCONFIG:=CONFIG_IGB \
     CONFIG_IGB_HWMON=y \
     CONFIG_IGB_DCA=n
   FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/igb/igb.ko
   AUTOLOAD:=$(call AutoLoad,35,igb,1)
-  FILES+=$(LINUX_DIR)/drivers/dca/dca.ko
 endef
 
 define KernelPackage/igb/description
@@ -801,14 +823,13 @@ $(eval $(call KernelPackage,igbvf))
 define KernelPackage/ixgbe
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Intel(R) 82598/82599 PCI-Express 10 Gigabit Ethernet support
-  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-ptp +kmod-hwmon-core +kmod-libphy +kmod-mdio-devres
+  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-ptp +kmod-hwmon-core +kmod-libphy +kmod-mdio-devres +kmod-dca
   KCONFIG:=CONFIG_IXGBE \
     CONFIG_IXGBE_VXLAN=n \
     CONFIG_IXGBE_HWMON=y \
     CONFIG_IXGBE_DCA=n
   FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/ixgbe/ixgbe.ko
   AUTOLOAD:=$(call AutoLoad,35,ixgbe)
-  FILES+=$(LINUX_DIR)/drivers/dca/dca.ko
 endef
 
 define KernelPackage/ixgbe/description
@@ -936,7 +957,7 @@ define KernelPackage/tg3
   TITLE:=Broadcom Tigon3 Gigabit Ethernet
   KCONFIG:=CONFIG_TIGON3 \
 	CONFIG_TIGON3_HWMON=n
-  DEPENDS:=+!TARGET_bcm47xx:kmod-libphy +kmod-ptp
+  DEPENDS:=+!TARGET_bcm47xx:kmod-libphy +kmod-ptp +kmod-hwmon-core
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   FILES:=$(LINUX_DIR)/drivers/net/ethernet/broadcom/tg3.ko
   AUTOLOAD:=$(call AutoLoad,19,tg3,1)
@@ -1294,7 +1315,7 @@ $(eval $(call KernelPackage,mlx4-core))
 define KernelPackage/mlx5-core
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Mellanox ConnectX(R) mlx5 core Network Driver
-  DEPENDS:=@PCI_SUPPORT +kmod-ptp
+  DEPENDS:=@PCI_SUPPORT +kmod-ptp +kmod-psample
   FILES:=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko
   KCONFIG:= CONFIG_MLX5_CORE \
 	CONFIG_MLX5_CORE_EN=y \
@@ -1313,6 +1334,7 @@ define KernelPackage/mlx5-core
 	CONFIG_MLX5_TC_CT=n \
 	CONFIG_MLX5_TLS=n
   AUTOLOAD:=$(call AutoProbe,mlx5_core)
+  FILES+=$(LINUX_DIR)/drivers/net/ethernet/mellanox/mlxfw/mlxfw.ko
 endef
 
 define KernelPackage/mlx5-core/description
@@ -1395,7 +1417,7 @@ $(eval $(call KernelPackage,igc))
 define KernelPackage/sfc
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Solarflare SFC9000/SFC9100/EF100-family support
-  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-lib-crc32c +kmod-ptp +kmod-hwmon-core
+  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-lib-crc32c +kmod-ptp +kmod-hwmon-core +kmod-mtd
   KCONFIG:= \
 	CONFIG_SFC \
 	CONFIG_SFC_MTD=y \
@@ -1416,7 +1438,7 @@ $(eval $(call KernelPackage,sfc))
 define KernelPackage/sfc-falcon
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Solarflare SFC4000 support
-  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-lib-crc32c +kmod-i2c-algo-bit
+  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-lib-crc32c +kmod-i2c-algo-bit +kmod-mtd
   KCONFIG:= \
 	CONFIG_SFC_FALCON \
 	CONFIG_SFC_FALCON_MTD=y
@@ -1508,4 +1530,3 @@ define KernelPackage/atlantic/description
 endef
 
 $(eval $(call KernelPackage,atlantic))
-

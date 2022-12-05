@@ -555,6 +555,7 @@ define KernelPackage/usb-audio
 	$(LINUX_DIR)/sound/usb/snd-usbmidi-lib.ko \
 	$(LINUX_DIR)/sound/usb/snd-usb-audio.ko
   AUTOLOAD:=$(call AutoProbe,snd-usbmidi-lib snd-usb-audio)
+  FILES+=$(LINUX_DIR)/drivers/media/mc/mc.ko
 endef
 
 define KernelPackage/usb-audio/description
@@ -1759,6 +1760,7 @@ define KernelPackage/usb3
 	$(XHCI_FILES)
   AUTOLOAD:=$(call AutoLoad,54,$(XHCI_AUTOLOAD),1)
   $(call AddDepends/usb)
+  FILES+=$(LINUX_DIR)/drivers/usb/host/xhci-pci-renesas.ko
 endef
 
 define KernelPackage/usb3/description

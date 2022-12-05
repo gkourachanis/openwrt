@@ -113,6 +113,7 @@ define KernelPackage/fs-cifs
     +((LINUX_5_15||LINUX_6_0)):kmod-asn1-decoder \
     +((LINUX_5_15||LINUX_6_0)):kmod-oid-registry \
     +((LINUX_5_15||LINUX_6_0)):kmod-dnsresolver
+  FILES+=$(LINUX_DIR)/fs/fscache/fscache.ko
 endef
 
 define KernelPackage/fs-cifs/description
@@ -236,6 +237,8 @@ define KernelPackage/fs-f2fs
   KCONFIG:=CONFIG_F2FS_FS
   FILES:=$(LINUX_DIR)/fs/f2fs/f2fs.ko
   AUTOLOAD:=$(call AutoLoad,30,f2fs,1)
+  FILES+=$(LINUX_DIR)/lib/zstd/zstd_compress.ko
+  FILES+=$(LINUX_DIR)/lib/lz4/lz4_compress.ko
 endef
 
 define KernelPackage/fs-f2fs/description

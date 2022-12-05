@@ -288,11 +288,38 @@ endef
 
 $(eval $(call KernelPackage,drm-kms-helper))
 
+# 
+define KernelPackage/cec
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=CEC core
+  DEPENDS:=@DISPLAY_SUPPORT
+  KCONFIG:=CONFIG_CEC_CORE
+  FILES:=$(LINUX_DIR)/drivers/media/cec/core/cec.ko
+  AUTOLOAD:=$(call AutoProbe,cec)
+endef
+
+$(eval $(call KernelPackage,cec))
+# 
+
+# 
+define KernelPackage/drm-display-helper
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=DRM helpers for display adapters.
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm +kmod-drm-kms-helper +kmod-cec
+  KCONFIG:=CONFIG_DRM_DISPLAY_HELPER
+  FILES:=$(LINUX_DIR)/drivers/gpu/drm/display/drm_display_helper.ko
+  AUTOLOAD:=$(call AutoProbe,drm_display_helper)
+endef
+
+$(eval $(call KernelPackage,drm-display-helper))
+# 
+
 define KernelPackage/drm-amdgpu
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=AMDGPU DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-ttm \
-	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit +amdgpu-firmware
+	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit \
+	+amdgpu-firmware +kmod-drm-display-helper +kmod-cec +kmod-hwmon-core
   KCONFIG:=CONFIG_DRM_AMDGPU \
 	CONFIG_DRM_AMDGPU_SI=y \
 	CONFIG_DRM_AMDGPU_CIK=y \
@@ -301,6 +328,8 @@ define KernelPackage/drm-amdgpu
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/amd/amdgpu/amdgpu.ko \
 	$(LINUX_DIR)/drivers/gpu/drm/scheduler/gpu-sched.ko
   AUTOLOAD:=$(call AutoProbe,amdgpu)
+  FILES+=$(LINUX_DIR)/drivers/gpu/drm/drm_buddy.ko
+  FILES+=$(LINUX_DIR)/drivers/iommu/amd/iommu_v2.ko
 endef
 
 define KernelPackage/drm-amdgpu/description
@@ -390,7 +419,8 @@ define KernelPackage/drm-radeon
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Radeon DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-kms-helper \
-	+kmod-drm-ttm +kmod-drm-ttm-helper +kmod-i2c-algo-bit +radeon-firmware
+	+kmod-drm-ttm +kmod-drm-ttm-helper +kmod-i2c-algo-bit \
+	+radeon-firmware +kmod-drm-display-helper +kmod-cec +kmod-hwmon-core
   KCONFIG:=CONFIG_DRM_RADEON
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/radeon/radeon.ko
   AUTOLOAD:=$(call AutoProbe,radeon)

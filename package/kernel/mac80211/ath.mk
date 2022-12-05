@@ -127,7 +127,7 @@ define KernelPackage/ath
   $(call KernelPackage/mac80211/Default)
   TITLE:=Atheros common driver part
   DEPENDS+= @PCI_SUPPORT||USB_SUPPORT||TARGET_ath79||TARGET_ath25 +kmod-mac80211
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ath.ko
   MENU:=1
 endef
 
@@ -140,7 +140,7 @@ define KernelPackage/ath5k
   TITLE:=Atheros 5xxx wireless cards support
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath5k
   DEPENDS+= @(PCI_SUPPORT||TARGET_ath25) +kmod-ath
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath5k/ath5k.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ath5k/ath5k.ko
   AUTOLOAD:=$(call AutoProbe,ath5k)
 endef
 
@@ -155,7 +155,7 @@ define KernelPackage/ath6kl
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath6kl
   HIDDEN:=1
   DEPENDS+= +kmod-ath +@DRIVER_11N_SUPPORT
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_core.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_core.ko
 endef
 
 define KernelPackage/ath6kl-sdio
@@ -163,7 +163,7 @@ define KernelPackage/ath6kl-sdio
   TITLE:=Atheros 802.11n SDIO wireless cards support
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath6kl
   DEPENDS+= +kmod-mmc +kmod-ath6kl
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_sdio.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_sdio.ko
   AUTOLOAD:=$(call AutoProbe,ath6kl_sdio)
 endef
 
@@ -177,7 +177,7 @@ define KernelPackage/ath6kl-usb
   TITLE:=Atheros 802.11n USB wireless cards support
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath6kl
   DEPENDS+= @USB_SUPPORT +kmod-usb-core +kmod-ath6kl
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_usb.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_usb.ko
   AUTOLOAD:=$(call AutoProbe,ath6kl_usb)
 endef
 
@@ -193,8 +193,8 @@ define KernelPackage/ath9k-common
   HIDDEN:=1
   DEPENDS+= @PCI_SUPPORT||USB_SUPPORT||TARGET_ath79 +kmod-ath +@DRIVER_11N_SUPPORT
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_common.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_hw.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_common.ko \
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_hw.ko
 endef
 
 define KernelPackage/ath9k
@@ -203,7 +203,7 @@ define KernelPackage/ath9k
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath9k
   DEPENDS+= @PCI_SUPPORT||TARGET_ath79 +kmod-ath9k-common
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k.ko
   AUTOLOAD:=$(call AutoProbe,ath9k)
 endef
 
@@ -242,7 +242,7 @@ define KernelPackage/ath9k-htc
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath9k
   DEPENDS+= @USB_SUPPORT +kmod-ath9k-common +kmod-usb-core +ath9k-htc-firmware
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_htc.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_htc.ko
   AUTOLOAD:=$(call AutoProbe,ath9k_htc)
 endef
 
@@ -258,8 +258,8 @@ define KernelPackage/ath10k
   DEPENDS+= @PCI_SUPPORT +kmod-ath +@DRIVER_11N_SUPPORT +@DRIVER_11AC_SUPPORT \
 	+ATH10K_THERMAL:kmod-hwmon-core +ATH10K_THERMAL:kmod-thermal
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath10k/ath10k_core.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath10k/ath10k_pci.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath10k/ath10k_core.ko \
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath10k/ath10k_pci.ko
   AUTOLOAD:=$(call AutoProbe,ath10k_core ath10k_pci)
   MODPARAMS.ath10k_core:=frame_mode=2
   VARIANT:=regular
@@ -294,7 +294,7 @@ define KernelPackage/carl9170
   $(call KernelPackage/mac80211/Default)
   TITLE:=Driver for Atheros AR9170 USB sticks
   DEPENDS:=@USB_SUPPORT +kmod-mac80211 +kmod-ath +kmod-usb-core +kmod-input-core +@DRIVER_11N_SUPPORT +carl9170-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/carl9170/carl9170.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/carl9170/carl9170.ko
   AUTOLOAD:=$(call AutoProbe,carl9170)
 endef
 
@@ -302,7 +302,7 @@ define KernelPackage/owl-loader
   $(call KernelPackage/mac80211/Default)
   TITLE:=Owl loader for initializing Atheros PCI(e) Wifi chips
   DEPENDS:=@PCI_SUPPORT +kmod-ath9k
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.ko
   AUTOLOAD:=$(call AutoProbe,ath9k_pci_owl_loader)
 endef
 
@@ -319,7 +319,7 @@ define KernelPackage/ar5523
   $(call KernelPackage/mac80211/Default)
   TITLE:=Driver for Atheros AR5523 USB sticks
   DEPENDS:=@USB_SUPPORT +kmod-mac80211 +kmod-ath +kmod-usb-core +kmod-input-core 
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ar5523/ar5523.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ar5523/ar5523.ko
   AUTOLOAD:=$(call AutoProbe,ar5523)
 endef
 
@@ -327,6 +327,6 @@ define KernelPackage/wil6210
   $(call KernelPackage/mac80211/Default)
   TITLE:=QCA/Wilocity 60g WiFi card wil6210 support
   DEPENDS+= @PCI_SUPPORT +kmod-mac80211 +wil6210-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/wil6210/wil6210.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/wil6210/wil6210.ko
   AUTOLOAD:=$(call AutoProbe,wil6210)
 endef

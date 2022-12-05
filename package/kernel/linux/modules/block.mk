@@ -180,12 +180,22 @@ endef
 $(eval $(call KernelPackage,ata-via-sata))
 
 
+define KernelPackage/mtd
+  SUBMENU:=$(BLOCK_MENU)
+  TITLE:=Memory Technology Device (MTD) support
+  KCONFIG:=CONFIG_MTD
+  FILES:=$(LINUX_DIR)/drivers/mtd/mtd.ko
+endef
+
+$(eval $(call KernelPackage,mtd))
+
+
 define KernelPackage/block2mtd
   SUBMENU:=$(BLOCK_MENU)
   TITLE:=Block device MTD emulation
+  DEPENDS:=+kmod-mtd
   KCONFIG:=CONFIG_MTD_BLOCK2MTD
   FILES:=$(LINUX_DIR)/drivers/mtd/devices/block2mtd.ko
-  FILES+=$(LINUX_DIR)/drivers/mtd/mtd.ko
 endef
 
 $(eval $(call KernelPackage,block2mtd))
@@ -510,6 +520,7 @@ define KernelPackage/nvme
 	$(LINUX_DIR)/drivers/nvme/host/nvme-core.ko \
 	$(LINUX_DIR)/drivers/nvme/host/nvme.ko
   AUTOLOAD:=$(call AutoLoad,30,nvme-core nvme)
+  FILES+=$(LINUX_DIR)/block/t10-pi.ko
 endef
 
 define KernelPackage/nvme/description
@@ -532,6 +543,7 @@ define KernelPackage/scsi-core
 	$(LINUX_DIR)/drivers/scsi/scsi_common.ko \
 	$(LINUX_DIR)/drivers/scsi/sd_mod.ko
   AUTOLOAD:=$(call AutoLoad,40,scsi_mod scsi_common sd_mod,1)
+  FILES+=$(LINUX_DIR)/block/t10-pi.ko
 endef
 
 $(eval $(call KernelPackage,scsi-core))

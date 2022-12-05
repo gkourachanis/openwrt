@@ -105,7 +105,7 @@ define KernelPackage/b43
 	@PCI_SUPPORT +kmod-mac80211 +kmod-lib-cordic \
 	$(if $(CONFIG_PACKAGE_B43_USE_SSB),+kmod-ssb) \
 	$(if $(CONFIG_PACKAGE_B43_USE_BCMA),+kmod-bcma)
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/b43/b43.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/b43/b43.ko
   AUTOLOAD:=$(call AutoProbe,b43)
   MENU:=1
 endef
@@ -343,7 +343,7 @@ define KernelPackage/brcmutil
   TITLE:=Broadcom IEEE802.11n common driver parts
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/brcm80211
   DEPENDS+=@PCI_SUPPORT||USB_SUPPORT
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko
   AUTOLOAD:=$(call AutoProbe,brcmutil)
   MENU:=1
 endef
@@ -382,7 +382,7 @@ define KernelPackage/brcmsmac
   TITLE:=Broadcom IEEE802.11n PCIe SoftMAC WLAN driver
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/brcm80211
   DEPENDS+= +kmod-mac80211 +@DRIVER_11N_SUPPORT +!TARGET_bcm47xx:kmod-bcma +kmod-lib-cordic +kmod-lib-crc8 +kmod-brcmutil +!BRCMSMAC_USE_FW_FROM_WL:brcmsmac-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmsmac/brcmsmac.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmsmac/brcmsmac.ko
   AUTOLOAD:=$(call AutoProbe,brcmsmac)
   MENU:=1
 endef
@@ -416,7 +416,7 @@ define KernelPackage/brcmfmac
   DEPENDS+= @USB_SUPPORT +kmod-cfg80211 +@DRIVER_11N_SUPPORT +@DRIVER_11AC_SUPPORT \
   	+kmod-brcmutil +BRCMFMAC_SDIO:kmod-mmc @!TARGET_uml \
 	+BRCMFMAC_USB:kmod-usb-core +BRCMFMAC_USB:brcmfmac-firmware-usb
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
   AUTOLOAD:=$(call AutoProbe,brcmfmac)
 endef
 

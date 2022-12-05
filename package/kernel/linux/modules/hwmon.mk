@@ -13,8 +13,7 @@ define KernelPackage/hwmon-core
   KCONFIG:= \
 	CONFIG_HWMON \
 	CONFIG_HWMON_DEBUG_CHIP=n
-  FILES:= \
-	$(LINUX_DIR)/drivers/hwmon/hwmon.ko
+  FILES:=$(LINUX_DIR)/drivers/hwmon/hwmon.ko
 endef
 
 define KernelPackage/hwmon-core/description

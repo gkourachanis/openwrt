@@ -882,7 +882,10 @@ define KernelPackage/arptables
   SUBMENU:=$(NF_MENU)
   TITLE:=ARP firewalling modules
   DEPENDS:=+kmod-ipt-core
-  FILES:=$(LINUX_DIR)/net/ipv4/netfilter/arp*.ko
+  FILES:= \
+	$(LINUX_DIR)/net/ipv4/netfilter/arp_tables.ko \
+	$(LINUX_DIR)/net/ipv4/netfilter/arpt_mangle.ko \
+	$(LINUX_DIR)/net/ipv4/netfilter/arptable_filter.ko
   KCONFIG:=CONFIG_IP_NF_ARPTABLES \
     CONFIG_IP_NF_ARPFILTER \
     CONFIG_IP_NF_ARP_MANGLE
@@ -896,10 +899,21 @@ endef
 $(eval $(call KernelPackage,arptables))
 
 
+define KernelPackage/bridge
+  SUBMENU:=$(NF_MENU)
+  TITLE:=802.1d Ethernet Bridging
+  FILES:=$(LINUX_DIR)/net/bridge/bridge.ko
+  KCONFIG:=CONFIG_BRIDGE
+  AUTOLOAD:=$(call AutoProbe,bridge)
+endef
+
+$(eval $(call KernelPackage,bridge))
+
+
 define KernelPackage/br-netfilter
   SUBMENU:=$(NF_MENU)
   TITLE:=Bridge netfilter support modules
-  DEPENDS:=+kmod-ipt-core
+  DEPENDS:=+kmod-ipt-core +kmod-bridge
   FILES:=$(LINUX_DIR)/net/bridge/br_netfilter.ko
   KCONFIG:=CONFIG_BRIDGE_NETFILTER
   AUTOLOAD:=$(call AutoProbe,br_netfilter)
@@ -1125,7 +1139,7 @@ $(eval $(call KernelPackage,nft-arp))
 define KernelPackage/nft-bridge
   SUBMENU:=$(NF_MENU)
   TITLE:=Netfilter nf_tables bridge table support
-  DEPENDS:=+kmod-nft-core
+  DEPENDS:=+kmod-nft-core +kmod-bridge
   FILES:=$(foreach mod,$(NFT_BRIDGE-m),$(LINUX_DIR)/net/$(mod).ko)
   AUTOLOAD:=$(call AutoProbe,$(notdir $(NFT_BRIDGE-m)))
   KCONFIG:= \
