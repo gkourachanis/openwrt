@@ -359,8 +359,8 @@ define KernelPackage/switch-bcm53xx
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Broadcom bcm53xx switch support
   DEPENDS:=+kmod-swconfig
-  KCONFIG:=CONFIG_SWCONFIG_B53
-  FILES:=$(LINUX_DIR)/drivers/net/phy/b53/b53_common.ko
+  KCONFIG:=CONFIG_B53
+  FILES:=$(LINUX_DIR)/drivers/net/dsa/b53/b53_common.ko
   AUTOLOAD:=$(call AutoLoad,42,b53_common)
 endef
 
@@ -374,8 +374,8 @@ define KernelPackage/switch-bcm53xx-mdio
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Broadcom bcm53xx switch MDIO support
   DEPENDS:=+kmod-switch-bcm53xx
-  KCONFIG:=CONFIG_SWCONFIG_B53_PHY_DRIVER
-  FILES:=$(LINUX_DIR)/drivers/net/phy/b53/b53_mdio.ko
+  KCONFIG:=CONFIG_B53_MDIO_DRIVER
+  FILES:=$(LINUX_DIR)/drivers/net/dsa/b53/b53_mdio.ko
   AUTOLOAD:=$(call AutoLoad,42,b53_mdio)
 endef
 
