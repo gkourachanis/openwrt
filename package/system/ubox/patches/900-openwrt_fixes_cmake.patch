@@ -1,0 +1,53 @@
+Adopted to OpenWrt target. Most likely these changes go elsewhere when done right.
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,6 +11,9 @@
+ ENDIF()
+ 
+ find_library(json NAMES json-c json)
++find_library(ubus NAMES ubus)
++find_library(uci NAMES uci)
++find_library(ubox NAMES ubox)
+ 
+ IF(DEBUG)
+   ADD_DEFINITIONS(-DDEBUG -g3)
+@@ -29,14 +32,14 @@
+ ENDIF()
+ 
+ ADD_EXECUTABLE(kmodloader kmodloader.c)
+-TARGET_LINK_LIBRARIES(kmodloader ubox)
++TARGET_LINK_LIBRARIES(kmodloader ${ubox})
+ 
+ INSTALL(TARGETS kmodloader
+ 	RUNTIME DESTINATION sbin
+ )
+ 
+ ADD_EXECUTABLE(lsbloader lsbloader.c)
+-TARGET_LINK_LIBRARIES(lsbloader ubox ubus)
++TARGET_LINK_LIBRARIES(lsbloader ${ubox} ${ubus})
+ 
+ INSTALL(TARGETS lsbloader
+ 	RUNTIME DESTINATION sbin
+@@ -51,19 +54,19 @@
+ INCLUDE_DIRECTORIES(${uci_include_dir})
+ 
+ ADD_EXECUTABLE(validate_data validate/cli.c)
+-TARGET_LINK_LIBRARIES(validate_data ubox uci validate)
++TARGET_LINK_LIBRARIES(validate_data ${ubox} ${uci} validate)
+ INSTALL(TARGETS validate_data
+ 	RUNTIME DESTINATION sbin
+ )
+ 
+ ADD_EXECUTABLE(logd log/logd.c log/syslog.c)
+-TARGET_LINK_LIBRARIES(logd ubox ubus)
++TARGET_LINK_LIBRARIES(logd ${ubox} ${ubus})
+ INSTALL(TARGETS logd
+ 	RUNTIME DESTINATION sbin
+ )
+ 
+ ADD_EXECUTABLE(logread log/logread.c)
+-TARGET_LINK_LIBRARIES(logread ubox ubus ${json} blobmsg_json)
++TARGET_LINK_LIBRARIES(logread ${ubox} ${ubus} ${json} blobmsg_json)
+ INSTALL(TARGETS logread
+ 	RUNTIME DESTINATION sbin
+ )
