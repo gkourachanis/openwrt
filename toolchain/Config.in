@@ -91,44 +91,47 @@ menuconfig EXTERNAL_TOOLCHAIN
 	config TARGET_NAME
 		string
 		prompt "Target name"  if DEVEL
-		depends on EXTERNAL_TOOLCHAIN && !NATIVE_TOOLCHAIN
-		default "aarch64-unknown-linux-gnu"  if aarch64
-		default "aarch64_be-unknown-linux-gnu"  if aarch64_be
-		default "arm-unknown-linux-gnu"      if arm
-		default "armeb-unknown-linux-gnu"    if armeb
-		default "i486-unknown-linux-gnu"     if i386
-		default "mips-unknown-linux-gnu"     if mips
-		default "mipsel-unknown-linux-gnu"   if mipsel
-		default "powerpc-unknown-linux-gnu"  if powerpc
-		default "x86_64-unknown-linux-gnu"   if x86_64
+		depends on EXTERNAL_TOOLCHAIN
+		default "aarch64-unknown-linux-gnu"  if aarch64 && !NATIVE_TOOLCHAIN
+		default "aarch64_be-unknown-linux-gnu"  if aarch64_be && !NATIVE_TOOLCHAIN
+		default "arm-unknown-linux-gnu"      if arm && !NATIVE_TOOLCHAIN
+		default "armeb-unknown-linux-gnu"    if armeb && !NATIVE_TOOLCHAIN
+		default "i486-unknown-linux-gnu"     if i386 && !NATIVE_TOOLCHAIN
+		default "mips-unknown-linux-gnu"     if mips && !NATIVE_TOOLCHAIN
+		default "mipsel-unknown-linux-gnu"   if mipsel && !NATIVE_TOOLCHAIN
+		default "powerpc-unknown-linux-gnu"  if powerpc && !NATIVE_TOOLCHAIN
+		default "x86_64-unknown-linux-gnu"   if x86_64 && !NATIVE_TOOLCHAIN
+		default "x86_64-pc-linux-gnu"   if x86_64 && NATIVE_TOOLCHAIN
 
 	config TOOLCHAIN_PREFIX
 		string
 		prompt "Toolchain prefix"  if DEVEL
-		depends on EXTERNAL_TOOLCHAIN && !NATIVE_TOOLCHAIN
-		default "aarch64-unknown-linux-gnu"  if aarch64
-		default "aarch64_be-unknown-linux-gnu"  if aarch64_be
-		default "arm-unknown-linux-gnu-"      if arm
-		default "armeb-unknown-linux-gnu-"    if armeb
-		default "i486-unknown-linux-gnu-"     if i386
-		default "mips-unknown-linux-gnu-"     if mips
-		default "mipsel-unknown-linux-gnu-"   if mipsel
-		default "powerpc-unknown-linux-gnu-"  if powerpc
-		default "x86_64-unknown-linux-gnu-"   if x86_64
+		depends on EXTERNAL_TOOLCHAIN
+		default "aarch64-unknown-linux-gnu"  if aarch64 && !NATIVE_TOOLCHAIN
+		default "aarch64_be-unknown-linux-gnu"  if aarch64_be && !NATIVE_TOOLCHAIN
+		default "arm-unknown-linux-gnu-"      if arm && !NATIVE_TOOLCHAIN
+		default "armeb-unknown-linux-gnu-"    if armeb && !NATIVE_TOOLCHAIN
+		default "i486-unknown-linux-gnu-"     if i386 && !NATIVE_TOOLCHAIN
+		default "mips-unknown-linux-gnu-"     if mips && !NATIVE_TOOLCHAIN
+		default "mipsel-unknown-linux-gnu-"   if mipsel && !NATIVE_TOOLCHAIN
+		default "powerpc-unknown-linux-gnu-"  if powerpc && !NATIVE_TOOLCHAIN
+		default "x86_64-unknown-linux-gnu-"   if x86_64 && !NATIVE_TOOLCHAIN
+		default "x86_64-pc-linux-gnu-"   if x86_64 && NATIVE_TOOLCHAIN
 
 	config TOOLCHAIN_ROOT
 		string
 		prompt "Toolchain root"  if DEVEL
-		depends on EXTERNAL_TOOLCHAIN && !NATIVE_TOOLCHAIN
-		default "/opt/cross/aarch64-unknown-linux-gnu"  if aarch64
-		default "/opt/cross/aarch64_be-unknown-linux-gnu"  if aarch64_be
-		default "/opt/cross/arm-unknown-linux-gnu"      if arm
-		default "/opt/cross/armeb-unknown-linux-gnu"    if armeb
-		default "/opt/cross/i486-unknown-linux-gnu"     if i386
-		default "/opt/cross/mips-unknown-linux-gnu"     if mips
-		default "/opt/cross/mipsel-unknown-linux-gnu"   if mipsel
-		default "/opt/cross/powerpc-unknown-linux-gnu"  if powerpc
-		default "/opt/cross/x86_64-unknown-linux-gnu"   if x86_64
+		depends on EXTERNAL_TOOLCHAIN
+		default "/opt/cross/aarch64-unknown-linux-gnu"  if aarch64 && !NATIVE_TOOLCHAIN
+		default "/opt/cross/aarch64_be-unknown-linux-gnu"  if aarch64_be && !NATIVE_TOOLCHAIN
+		default "/opt/cross/arm-unknown-linux-gnu"      if arm && !NATIVE_TOOLCHAIN
+		default "/opt/cross/armeb-unknown-linux-gnu"    if armeb && !NATIVE_TOOLCHAIN
+		default "/opt/cross/i486-unknown-linux-gnu"     if i386 && !NATIVE_TOOLCHAIN
+		default "/opt/cross/mips-unknown-linux-gnu"     if mips && !NATIVE_TOOLCHAIN
+		default "/opt/cross/mipsel-unknown-linux-gnu"   if mipsel && !NATIVE_TOOLCHAIN
+		default "/opt/cross/powerpc-unknown-linux-gnu"  if powerpc && !NATIVE_TOOLCHAIN
+		default "/opt/cross/x86_64-unknown-linux-gnu"   if x86_64 && !NATIVE_TOOLCHAIN
+		default "/"   if x86_64 && NATIVE_TOOLCHAIN
 
 	choice TOOLCHAIN_LIBC_TYPE
 		prompt "Toolchain libc"  if DEVEL
@@ -159,7 +162,7 @@ menuconfig EXTERNAL_TOOLCHAIN
 	config TOOLCHAIN_BIN_PATH
 		string
 		prompt "Toolchain program path"  if DEVEL
-		depends on EXTERNAL_TOOLCHAIN && !NATIVE_TOOLCHAIN
+		depends on EXTERNAL_TOOLCHAIN
 		default "./usr/bin ./bin"
 		help
 		  Specify additional directories searched for toolchain binaries
@@ -168,9 +171,10 @@ menuconfig EXTERNAL_TOOLCHAIN
 	config TOOLCHAIN_INC_PATH
 		string
 		prompt "Toolchain include path"  if DEVEL
-		depends on EXTERNAL_TOOLCHAIN && !NATIVE_TOOLCHAIN
-		default "./usr/include ./include/fortify ./include" if EXTERNAL_TOOLCHAIN_LIBC_USE_MUSL
-		default "./usr/include ./include"
+		depends on EXTERNAL_TOOLCHAIN
+		default "./usr/include ./include/fortify ./include" if EXTERNAL_TOOLCHAIN_LIBC_USE_MUSL && !NATIVE_TOOLCHAIN
+		default "./usr/include ./include" if !NATIVE_TOOLCHAIN
+		default "./usr/include"
 		help
 		  Specify additional directories searched for header files (override
 		  CPPFLAGS). Use ./DIR for directories relative to the root above.
@@ -178,7 +182,7 @@ menuconfig EXTERNAL_TOOLCHAIN
 	config TOOLCHAIN_LIB_PATH
 		string
 		prompt "Toolchain library path"  if DEVEL
-		depends on EXTERNAL_TOOLCHAIN && !NATIVE_TOOLCHAIN
+		depends on EXTERNAL_TOOLCHAIN
 		default "./usr/lib ./lib"
 		help
 		  Specify additional directories searched for libraries (override LDFLAGS).
