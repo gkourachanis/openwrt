@@ -73,6 +73,15 @@ menu "Target Images"
 			  This is useful for generating images with a dedicated
 			  ramdisk e.g. in U-Boot's uImage and uImage.FIT formats.
 
+		config TARGET_INITRAMFS_PRESERVE_MTIME
+			bool "Preserve cpio archive mtimes in initramfs"
+			depends on TARGET_ROOTFS_INITRAMFS
+			default y
+			help
+			  Each entry in an initramfs cpio archive carries an mtime value. When
+			  enabled, extracted cpio items take this mtime, with directory mtime
+			  setting deferred until after creation of any child entries.
+
 	comment "Root filesystem archives"
 
 	config TARGET_ROOTFS_CPIOGZ
