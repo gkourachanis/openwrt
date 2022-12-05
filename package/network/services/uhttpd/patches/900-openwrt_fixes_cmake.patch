@@ -1,0 +1,20 @@
+Adopted to OpenWrt target. Most likely these changes go elsewhere when done right.
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -41,6 +41,7 @@
+ FIND_LIBRARY(blobmsg_json NAMES blobmsg_json)
+ 
+ ADD_EXECUTABLE(uhttpd ${SOURCES})
++FIND_LIBRARY(ucode NAMES ucode)
+ FIND_LIBRARY(libjson NAMES json-c json)
+ TARGET_LINK_LIBRARIES(uhttpd ${ubox} dl ${json_script} ${blobmsg_json} ${libjson} ${LIBS})
+ 
+@@ -78,7 +79,7 @@
+ 	SET(PLUGINS ${PLUGINS} uhttpd_ucode)
+ 	ADD_DEFINITIONS(-DHAVE_UCODE)
+ 	ADD_LIBRARY(uhttpd_ucode MODULE ucode.c)
+-	TARGET_LINK_LIBRARIES(uhttpd_ucode ucode ${libjson})
++	TARGET_LINK_LIBRARIES(uhttpd_ucode ${ucode} ${libjson})
+ ENDIF()
+ 
+ IF(UBUS_SUPPORT)
