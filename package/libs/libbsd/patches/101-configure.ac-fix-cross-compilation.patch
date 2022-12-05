@@ -1,0 +1,29 @@
+Subject: [PATCH] configure.ac: fix cross compilation
+
+Fixes errors in the form of:
+  Package libbsd is missing dependencies for the following libraries:
+  libmd.so.0
+--- a/configure.ac
++++ b/configure.ac
+@@ -102,21 +102,6 @@
+                [test "x$ac_cv_lib_testu01_unif01_CreateExternGenBits" = "xyes"])
+ 
+ saved_LIBS="$LIBS"
+-AC_SEARCH_LIBS([MD5Update], [md], [
+-  AS_IF([test "x$ac_cv_search_MD5Update" != "xnone required"], [
+-    MD5_LIBS="$MD5_LIBS $ac_cv_search_MD5Update"
+-    need_transparent_libmd=yes
+-  ])
+-], [
+-  AC_MSG_ERROR([cannot find required MD5 functions in libc or libmd])
+-])
+-AC_SEARCH_LIBS([SHA512Update], [md], [
+-  AS_IF([test "x$ac_cv_search_SHA512Update" != "xnone required"], [
+-    LIBBSD_LIBS="$LIBBSD_LIBS $ac_cv_search_SHA512Update"
+-  ])
+-], [
+-  AC_MSG_ERROR([cannot find required SHA-2 functions in libc or libmd])
+-])
+ LIBS="$saved_LIBS"
+ 
+ AM_CONDITIONAL([NEED_TRANSPARENT_LIBMD],
