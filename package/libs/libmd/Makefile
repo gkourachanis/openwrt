@@ -43,5 +43,10 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/usr/lib/pkgconfig/libmd*.pc $(1)/usr/lib/pkgconfig/
 	$(CP) $(PKG_INSTALL_DIR)/usr/include/* $(1)/usr/include/
 endef
+ 
+define Package/libmd/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libmd.so.* $(1)/usr/lib/
+endef
 
 $(eval $(call BuildPackage,libmd))
