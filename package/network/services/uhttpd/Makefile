@@ -100,6 +100,7 @@ endef
 ifneq ($(CONFIG_USE_GLIBC),)
   TARGET_CFLAGS += -D_DEFAULT_SOURCE
 endif
+TARGET_CFLAGS += -Wno-error=implicit-function-declaration
 
 TARGET_LDFLAGS += -lcrypt
 

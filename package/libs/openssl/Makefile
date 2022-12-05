@@ -63,6 +63,8 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_OPENSSL_WITH_TLS13 \
 	CONFIG_OPENSSL_WITH_WHIRLPOOL
 
+TARGET_CFLAGS+=-I$(STAGING_DIR)/usr/include/
+
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/openssl-engine.mk
 

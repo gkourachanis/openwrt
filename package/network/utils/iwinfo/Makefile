@@ -76,6 +76,9 @@ TARGET_CFLAGS += \
 	-I$(STAGING_DIR)/usr/include \
 	-D_GNU_SOURCE
 
+TARGET_LDFLAGS += \
+	-L$(STAGING_DIR)/usr/lib/
+
 MAKE_FLAGS += \
 	FPIC="$(FPIC)" \
 	CFLAGS="$(TARGET_CFLAGS)" \

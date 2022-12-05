@@ -49,6 +49,9 @@ TARGET_CPPFLAGS:= \
 	-D_GNU_SOURCE \
 	-flto
 
+TARGET_LDFLAGS += \
+	-L$(STAGING_DIR)/usr/lib/
+
 ifeq ($(BUILD_VARIANT),full)
   TARGET_CPPFLAGS += -DIW_FULL
   MAKE_FLAGS += IW_FULL=1
