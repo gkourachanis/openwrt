@@ -1,0 +1,41 @@
+Adopted to OpenWrt target. Most likely these changes go elsewhere when done right.
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,6 +8,7 @@
+ ENDIF()
+ 
+ find_library(json NAMES json-c json)
++find_library(ubox NAMES ubox)
+ 
+ IF(DEBUG)
+   ADD_DEFINITIONS(-DDEBUG -g3)
+@@ -15,10 +16,15 @@
+ 
+ INCLUDE(FindPkgConfig)
+ PKG_CHECK_MODULES(JSONC json-c json)
++PKG_CHECK_MODULES(UBOX ubox)
+ IF(JSONC_FOUND)
+   ADD_DEFINITIONS(-DJSONC)
+   INCLUDE_DIRECTORIES(${JSONC_INCLUDE_DIRS})
+ ENDIF()
++IF(UBOX_FOUND)
++  ADD_DEFINITIONS(-DUBOX)
++  INCLUDE_DIRECTORIES(${UBOX_INCLUDE_DIRS})
++ENDIF()
+ 
+ ADD_CUSTOM_COMMAND(
+   OUTPUT contrib/lemon
+@@ -34,12 +40,9 @@
+   COMMENT "Generating parser.c"
+ )
+ 
+-FIND_PATH(ubox_include_dir libubox/list.h)
+-INCLUDE_DIRECTORIES(${ubox_include_dir})
+-
+ SET_PROPERTY(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES "lemon;parser.h;parser.out")
+ SET_SOURCE_FILES_PROPERTIES("parser.c" PROPERTIES GENERATED TRUE)
+ ADD_EXECUTABLE(jsonpath main.c ast.c lexer.c parser.c matcher.c)
+-TARGET_LINK_LIBRARIES(jsonpath ubox ${json})
++TARGET_LINK_LIBRARIES(jsonpath ${ubox} ${json})
+ 
+ INSTALL(TARGETS jsonpath RUNTIME DESTINATION bin)
