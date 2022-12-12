@@ -13,8 +13,11 @@ PKG_FLAGS:=hold
 
 PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/packages
 
-PKG_VERSION:=6.0.9
+PKG_VERSION:=6.1-rc8
 PKG_RELEASE:=1
+# PKG_SOURCE_URL:=@KERNEL/linux/kernel/projects/backports/stable/v5.15.58/
+PKG_SOURCE_URL:=http://mirror2.openwrt.org/sources/
+PKG_HASH:=7f3d96c2573183cd79d6a3ebe5e1b7b73c19d1326d443c85b69c4181f14e6e2b
 
 PKG_LICENSE:=GPL-2.0
 PKG_LICENSE_FILES:=
