@@ -55,7 +55,7 @@ define Build/append-rutx-metadata
 			"batch": [".*"], \
 			"serial": [".*"], \
 			"supported_devices":["teltonika,rutx"] \
-		}' | fwtool -I - $@
+		}' | $(FWTOOL) -I - $@
 endef
 
 define Build/copy-file

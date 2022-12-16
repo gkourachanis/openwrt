@@ -267,6 +267,40 @@ FIND:=find
 PATCH:=patch
 PYTHON:=python3
 
+ALL_BIN_DIRS := \
+	$(STAGING_DIR_HOST)/bin \
+	$(TOOLCHAIN_DIR)/bin \
+	$(STAGING_DIR)/bin \
+	$(STAGING_DIR)/usr/bin \
+	$(STAGING_DIR_ROOT)/bin \
+	$(STAGING_DIR_ROOT)/usr/bin \
+	$(STAGING_DIR_HOSTPKG)/bin \
+	$(STAGING_DIR_HOSTPKG)/usr/bin \
+	/bin \
+	/usr/bin \
+	/usr/local/bin
+
+USIGN = \
+	$(firstword $(wildcard $(foreach \
+				_usign_path, \
+				$(ALL_BIN_DIRS), \
+				$(_usign_path)/usign \
+	)))
+
+UCERT = \
+	$(firstword $(wildcard $(foreach \
+				_ucert_path, \
+				$(ALL_BIN_DIRS), \
+				$(_ucert_path)/ucert \
+	)))
+
+FWTOOL = \
+	$(firstword $(wildcard $(foreach \
+				_fwtool_path, \
+				$(ALL_BIN_DIRS), \
+				$(_fwtool_path)/fwtool \
+	)))
+
 INSTALL_BIN:=install -m0755
 INSTALL_SUID:=install -m4755
 INSTALL_DIR:=install -d -m0755

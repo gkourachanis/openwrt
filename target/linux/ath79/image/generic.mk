@@ -166,7 +166,7 @@ metadata_json_teltonika = \
 	}'
 
 define Build/append-metadata-teltonika
-	echo $(call metadata_json_teltonika) | fwtool -I - $@
+	echo $(call metadata_json_teltonika) | $(FWTOOL) -I - $@
 endef
 
 define Build/wrgg-pad-rootfs

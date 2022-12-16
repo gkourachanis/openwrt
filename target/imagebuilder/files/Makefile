@@ -141,7 +141,7 @@ package_index: FORCE
 	(cd $(PACKAGE_DIR); $(SCRIPT_DIR)/ipkg-make-index.sh . > Packages && \
 		gzip -9nc Packages > Packages.gz; \
 		$(if $(CONFIG_SIGNATURE_CHECK), \
-			$(STAGING_DIR_HOST)/bin/usign -S -m Packages -s $(BUILD_KEY)) \
+			$(USIGN) -S -m Packages -s $(BUILD_KEY)) \
 	) >/dev/null 2>/dev/null
 	$(OPKG) update >&2 || true
 
@@ -223,13 +223,13 @@ _check_keys: FORCE
 ifneq ($(CONFIG_SIGNATURE_CHECK),)
 	@if [ ! -s $(BUILD_KEY) -o ! -s $(BUILD_KEY).pub ]; then \
 		echo Generate local signing keys... >&2; \
-		$(STAGING_DIR_HOST)/bin/usign -G \
+		$(USIGN) -G \
 			-s $(BUILD_KEY) -p $(BUILD_KEY).pub -c "Local build key"; \
 		$(SCRIPT_DIR)/opkg-key add $(BUILD_KEY).pub; \
 	fi
 	if [ ! -s $(BUILD_KEY).ucert ]; then \
 		echo Generate local certificate... >&2; \
-		$(STAGING_DIR_HOST)/bin/ucert -I \
+		$(UCERT) -I \
 			-c $(BUILD_KEY).ucert \
 			-p $(BUILD_KEY).pub \
 			-s $(BUILD_KEY); \

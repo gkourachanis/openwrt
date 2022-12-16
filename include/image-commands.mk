@@ -38,8 +38,8 @@ endef
 
 define Build/append-image
 	cp "$(BIN_DIR)/$(DEVICE_IMG_PREFIX)-$(1)" "$@.stripmeta"
-	fwtool -s /dev/null -t "$@.stripmeta" || :
-	fwtool -i /dev/null -t "$@.stripmeta" || :
+	$(FWTOOL) -s /dev/null -t "$@.stripmeta" || :
+	$(FWTOOL) -i /dev/null -t "$@.stripmeta" || :
 	dd if="$@.stripmeta" >> "$@"
 	rm "$@.stripmeta"
 endef
@@ -51,8 +51,8 @@ endef
 else
 define Build/append-image-stage
 	cp "$(BIN_DIR)/$(DEVICE_IMG_PREFIX)-$(1)" "$@.stripmeta"
-	fwtool -s /dev/null -t "$@.stripmeta" || :
-	fwtool -i /dev/null -t "$@.stripmeta" || :
+	$(FWTOOL) -s /dev/null -t "$@.stripmeta" || :
+	$(FWTOOL) -i /dev/null -t "$@.stripmeta" || :
 	mkdir -p "$(STAGING_DIR_IMAGE)"
 	dd if="$@.stripmeta" of="$(STAGING_DIR_IMAGE)/$(BOARD)$(if $(SUBTARGET),-$(SUBTARGET))-$(DEVICE_NAME)-$(1)"
 	dd if="$@.stripmeta" >> "$@"
@@ -89,13 +89,13 @@ metadata_json = \
 	}'
 
 define Build/append-metadata
-	$(if $(SUPPORTED_DEVICES),-echo $(call metadata_json) | fwtool -I - $@)
+	$(if $(SUPPORTED_DEVICES),-echo $(call metadata_json) | $(FWTOOL) -I - $@)
 	sha256sum "$@" | cut -d" " -f1 > "$@.sha256sum"
 	[ ! -s "$(BUILD_KEY)" -o ! -s "$(BUILD_KEY).ucert" -o ! -s "$@" ] || { \
 		cp "$(BUILD_KEY).ucert" "$@.ucert" ;\
-		usign -S -m "$@" -s "$(BUILD_KEY)" -x "$@.sig" ;\
-		ucert -A -c "$@.ucert" -x "$@.sig" ;\
-		fwtool -S "$@.ucert" "$@" ;\
+		$(USIGN) -S -m "$@" -s "$(BUILD_KEY)" -x "$@.sig" ;\
+		$(UCERT) -A -c "$@.ucert" -x "$@.sig" ;\
+		$(FWTOOL) -S "$@.ucert" "$@" ;\
 	}
 endef
 
