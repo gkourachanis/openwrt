@@ -13,8 +13,7 @@ define KernelPackage/hwmon-core
   KCONFIG:= \
 	CONFIG_HWMON \
 	CONFIG_HWMON_DEBUG_CHIP=n
-  FILES:= \
-	$(LINUX_DIR)/drivers/hwmon/hwmon.ko
+  FILES:=$(LINUX_DIR)/drivers/hwmon/hwmon.ko
 endef
 
 define KernelPackage/hwmon-core/description
@@ -356,6 +355,8 @@ define KernelPackage/hwmon-nct6775
   FILES:=$(LINUX_DIR)/drivers/hwmon/nct6775.ko
   AUTOLOAD:=$(call AutoProbe,nct6775)
   $(call AddDepends/hwmon,@PCI_SUPPORT @TARGET_x86 +kmod-hwmon-vid)
+  FILES+=$(LINUX_DIR)/drivers/platform/x86/wmi.ko
+  FILES+=$(LINUX_DIR)/drivers/hwmon/nct6775-core.ko
 endef
 
 define KernelPackage/hwmon-nct6775/description

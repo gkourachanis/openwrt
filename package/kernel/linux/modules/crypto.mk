@@ -389,6 +389,7 @@ define KernelPackage/crypto-hw-hifn-795x
   DEPENDS:=@PCI_SUPPORT +kmod-random-core +kmod-crypto-manager
   KCONFIG:= \
 	CONFIG_CRYPTO_HW=y \
+	CONFIG_ARCH_DMA_ADDR_T_64BIT=n \
 	CONFIG_CRYPTO_DEV_HIFN_795X \
 	CONFIG_CRYPTO_DEV_HIFN_795X_RNG=y
   FILES:=$(LINUX_DIR)/drivers/crypto/hifn_795x.ko

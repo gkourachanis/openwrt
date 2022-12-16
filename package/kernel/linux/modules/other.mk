@@ -59,6 +59,9 @@ define KernelPackage/bluetooth
 	$(LINUX_DIR)/drivers/bluetooth/btintel.ko \
 	$(LINUX_DIR)/drivers/bluetooth/btrtl.ko
   AUTOLOAD:=$(call AutoProbe,bluetooth rfcomm bnep hidp hci_uart btusb)
+  FILES+=$(LINUX_DIR)/drivers/bluetooth/btmtk.ko
+#   FILES+=$(LINUX_DIR)/drivers/bluetooth/btqca.ko
+#   FILES+=$(LINUX_DIR)/drivers/bluetooth/btbcm.ko
 endef
 
 define KernelPackage/bluetooth/description
@@ -84,7 +87,6 @@ define KernelPackage/ath3k/description
 endef
 
 $(eval $(call KernelPackage,ath3k))
-
 
 define KernelPackage/bluetooth-6lowpan
   SUBMENU:=$(OTHER_MENU)
@@ -529,6 +531,9 @@ define KernelPackage/ssb
 	CONFIG_SSB_SILENT=y
   FILES:=$(LINUX_DIR)/drivers/ssb/ssb.ko
   AUTOLOAD:=$(call AutoLoad,18,ssb,1)
+  FILES+=$(LINUX_DIR)/drivers/pcmcia/pcmcia.ko
+  FILES+=$(LINUX_DIR)/drivers/mmc/core/mmc_core.ko
+  FILES+=$(LINUX_DIR)/drivers/pcmcia/pcmcia_core.ko
 endef
 
 define KernelPackage/ssb/description
@@ -765,6 +770,7 @@ $(eval $(call KernelPackage,rtc-s35390a))
 define KernelPackage/mtdtests
   SUBMENU:=$(OTHER_MENU)
   TITLE:=MTD subsystem tests
+  DEPENDS:=+kmod-mtd
   KCONFIG:=CONFIG_MTD_TESTS
   FILES:=\
 	$(LINUX_DIR)/drivers/mtd/tests/mtd_nandecctest.ko \
@@ -787,6 +793,7 @@ $(eval $(call KernelPackage,mtdtests))
 define KernelPackage/mtdoops
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Log panic/oops to an MTD buffer
+  DEPENDS:=+kmod-mtd
   KCONFIG:=CONFIG_MTD_OOPS
   FILES:=$(LINUX_DIR)/drivers/mtd/mtdoops.ko
 endef
@@ -801,6 +808,7 @@ $(eval $(call KernelPackage,mtdoops))
 define KernelPackage/mtdram
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Test MTD driver using RAM
+  DEPENDS:=+kmod-mtd
   KCONFIG:=CONFIG_MTD_MTDRAM \
     CONFIG_MTDRAM_TOTAL_SIZE=4096 \
     CONFIG_MTDRAM_ERASE_SIZE=128
@@ -867,6 +875,7 @@ define KernelPackage/serial-8250
 	$(if $(CONFIG_PCI),$(LINUX_DIR)/drivers/tty/serial/8250/8250_pci.ko) \
 	$(if $(CONFIG_GPIOLIB),$(LINUX_DIR)/drivers/tty/serial/serial_mctrl_gpio.ko)
   AUTOLOAD:=$(call AutoProbe,8250 8250_base 8250_pci)
+  FILES+=$(LINUX_DIR)/drivers/tty/serial/serial_core.ko
 endef
 
 define KernelPackage/serial-8250/description
@@ -1232,8 +1241,8 @@ $(eval $(call KernelPackage,keys-trusted))
 define KernelPackage/tpm
   SUBMENU:=$(OTHER_MENU)
   TITLE:=TPM Hardware Support
-  DEPENDS:= +kmod-random-core +(LINUX_5_15):kmod-asn1-decoder \
-	  +(LINUX_5_15):kmod-asn1-encoder +(LINUX_5_15):kmod-oid-registry
+  DEPENDS:= +kmod-random-core +((LINUX_5_15||LINUX_6_1)):kmod-asn1-decoder \
+	  +((LINUX_5_15||LINUX_6_1)):kmod-asn1-encoder +((LINUX_5_15||LINUX_6_1)):kmod-oid-registry
   KCONFIG:= CONFIG_TCG_TPM
   FILES:= $(LINUX_DIR)/drivers/char/tpm/tpm.ko
   AUTOLOAD:=$(call AutoLoad,10,tpm,1)
@@ -1317,10 +1326,10 @@ $(eval $(call KernelPackage,i6300esb-wdt))
 define KernelPackage/mhi-bus
   SUBMENU:=$(OTHER_MENU)
   TITLE:=MHI bus
-  DEPENDS:=@LINUX_5_15
+  DEPENDS:=@(LINUX_5_15||LINUX_6_1)
   KCONFIG:=CONFIG_MHI_BUS \
            CONFIG_MHI_BUS_DEBUG=y
-  FILES:=$(LINUX_DIR)/drivers/bus/mhi/core/mhi.ko
+  FILES:=
   AUTOLOAD:=$(call AutoProbe,mhi)
 endef
 
@@ -1333,9 +1342,9 @@ $(eval $(call KernelPackage,mhi-bus))
 define KernelPackage/mhi-pci-generic
   SUBMENU:=$(OTHER_MENU)
   TITLE:=MHI PCI controller driver
-  DEPENDS:=@LINUX_5_15 +kmod-mhi-bus
+  DEPENDS:=@(LINUX_5_15||LINUX_6_1) +kmod-mhi-bus
   KCONFIG:=CONFIG_MHI_BUS_PCI_GENERIC
-  FILES:=$(LINUX_DIR)/drivers/bus/mhi/mhi_pci_generic.ko
+  FILES:=
   AUTOLOAD:=$(call AutoProbe,mhi_pci_generic)
 endef
 

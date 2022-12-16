@@ -182,7 +182,7 @@ $(eval $(call KernelPackage,can-raw))
 define KernelPackage/can-slcan
   TITLE:=Serial / USB serial CAN Adaptors (slcan)
   KCONFIG:=CONFIG_CAN_SLCAN
-  FILES:=$(LINUX_DIR)/drivers/net/can/slcan.ko
+  FILES:=$(LINUX_DIR)/drivers/net/can/slcan/slcan.ko
   AUTOLOAD:=$(call AutoProbe,slcan)
   $(call AddDepends/can)
 endef
@@ -229,10 +229,10 @@ $(eval $(call KernelPackage,can-usb-ems))
 
 
 define KernelPackage/can-usb-esd
-  TITLE:=ESD USB/2 CAN/USB interface
-  KCONFIG:=CONFIG_CAN_ESD_USB2
-  FILES:=$(LINUX_DIR)/drivers/net/can/usb/esd_usb2.ko
-  AUTOLOAD:=$(call AutoProbe,esd_usb2)
+  TITLE:=ESD USB CAN/USB interface
+  KCONFIG:=CONFIG_CAN_ESD_USB
+  FILES:=$(LINUX_DIR)/drivers/net/can/usb/esd_usb.ko
+  AUTOLOAD:=$(call AutoProbe,esd_usb)
   $(call AddDepends/can,+kmod-usb-core)
 endef
 

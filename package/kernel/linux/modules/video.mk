@@ -226,7 +226,7 @@ define KernelPackage/drm
   TITLE:=Direct Rendering Manager (DRM) support
   HIDDEN:=1
   DEPENDS:=+kmod-dma-buf +kmod-i2c-core +PACKAGE_kmod-backlight:kmod-backlight \
-	+(LINUX_5_15):kmod-fb
+	+((LINUX_5_15||LINUX_6_1)):kmod-fb
   KCONFIG:=CONFIG_DRM
   FILES:= \
 	$(LINUX_DIR)/drivers/gpu/drm/drm.ko \
@@ -288,11 +288,38 @@ endef
 
 $(eval $(call KernelPackage,drm-kms-helper))
 
+# 
+define KernelPackage/cec
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=CEC core
+  DEPENDS:=@DISPLAY_SUPPORT
+  KCONFIG:=CONFIG_CEC_CORE
+  FILES:=$(LINUX_DIR)/drivers/media/cec/core/cec.ko
+  AUTOLOAD:=$(call AutoProbe,cec)
+endef
+
+$(eval $(call KernelPackage,cec))
+# 
+
+# 
+define KernelPackage/drm-display-helper
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=DRM helpers for display adapters.
+  DEPENDS:=@DISPLAY_SUPPORT +kmod-drm +kmod-drm-kms-helper +kmod-cec
+  KCONFIG:=CONFIG_DRM_DISPLAY_HELPER
+  FILES:=$(LINUX_DIR)/drivers/gpu/drm/display/drm_display_helper.ko
+  AUTOLOAD:=$(call AutoProbe,drm_display_helper)
+endef
+
+$(eval $(call KernelPackage,drm-display-helper))
+# 
+
 define KernelPackage/drm-amdgpu
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=AMDGPU DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-ttm \
-	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit +amdgpu-firmware
+	+kmod-drm-ttm-helper +kmod-drm-kms-helper +kmod-i2c-algo-bit \
+	+amdgpu-firmware +kmod-drm-display-helper +kmod-cec +kmod-hwmon-core
   KCONFIG:=CONFIG_DRM_AMDGPU \
 	CONFIG_DRM_AMDGPU_SI=y \
 	CONFIG_DRM_AMDGPU_CIK=y \
@@ -301,6 +328,8 @@ define KernelPackage/drm-amdgpu
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/amd/amdgpu/amdgpu.ko \
 	$(LINUX_DIR)/drivers/gpu/drm/scheduler/gpu-sched.ko
   AUTOLOAD:=$(call AutoProbe,amdgpu)
+  FILES+=$(LINUX_DIR)/drivers/gpu/drm/drm_buddy.ko
+  FILES+=$(LINUX_DIR)/drivers/iommu/amd/iommu_v2.ko
 endef
 
 define KernelPackage/drm-amdgpu/description
@@ -321,8 +350,7 @@ define KernelPackage/drm-imx
 	CONFIG_RESET_CONTROLLER=y \
 	CONFIG_DRM_IMX_IPUV3 \
 	CONFIG_IMX_IPUV3 \
-	CONFIG_DRM_GEM_CMA_HELPER=y \
-	CONFIG_DRM_KMS_CMA_HELPER=y \
+	CONFIG_DRM_GEM_DMA_HELPER=y \
 	CONFIG_DRM_IMX_FB_HELPER \
 	CONFIG_DRM_IMX_PARALLEL_DISPLAY=n \
 	CONFIG_DRM_IMX_TVE=n \
@@ -390,7 +418,8 @@ define KernelPackage/drm-radeon
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Radeon DRM support
   DEPENDS:=@TARGET_x86 @DISPLAY_SUPPORT +kmod-backlight +kmod-drm-kms-helper \
-	+kmod-drm-ttm +kmod-drm-ttm-helper +kmod-i2c-algo-bit +radeon-firmware
+	+kmod-drm-ttm +kmod-drm-ttm-helper +kmod-i2c-algo-bit \
+	+radeon-firmware +kmod-drm-display-helper +kmod-cec +kmod-hwmon-core
   KCONFIG:=CONFIG_DRM_RADEON
   FILES:=$(LINUX_DIR)/drivers/gpu/drm/radeon/radeon.ko
   AUTOLOAD:=$(call AutoProbe,radeon)
@@ -418,6 +447,7 @@ define KernelPackage/video-core
   FILES:= \
 	$(LINUX_DIR)/drivers/media/$(V4L2_DIR)/videodev.ko
   AUTOLOAD:=$(call AutoLoad,60, videodev v4l2-common)
+  FILES+=$(LINUX_DIR)/drivers/media/mc/mc.ko
 endef
 
 define KernelPackage/video-core/description
@@ -466,7 +496,7 @@ define KernelPackage/video-cpia2
   TITLE:=CPIA2 video driver
   DEPENDS:=@USB_SUPPORT +kmod-usb-core
   KCONFIG:=CONFIG_VIDEO_CPIA2
-  FILES:=$(LINUX_DIR)/drivers/media/$(V4L2_USB_DIR)/cpia2/cpia2.ko
+  FILES:=$(LINUX_DIR)/drivers/staging/media/deprecated/cpia2/cpia2.ko
   AUTOLOAD:=$(call AutoProbe,cpia2)
   $(call AddDepends/camera)
 endef

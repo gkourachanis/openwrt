@@ -1,0 +1,56 @@
+From 6c0a15a3dc6b45156c5b9568c8308e3f0d802af0 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Tue, 25 Oct 2022 18:34:24 +0300
+Subject: [PATCH] mtd: parsers: tplink_safeloader: fix uninitialized variable
+ bug
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On 64 bit systems, the highest 32 bits of the "offset" variable are
+not initialized.  Also the existing code is not endian safe (it will
+fail on big endian systems).  Change the type of "offset" to a u32.
+
+Fixes: aec4d5f5ffd0 ("mtd: parsers: add TP-Link SafeLoader partitions table parser")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/Y1gCALFWXYYwqV1P@kili
+---
+ drivers/mtd/parsers/tplink_safeloader.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/parsers/tplink_safeloader.c b/drivers/mtd/parsers/tplink_safeloader.c
+index 23584a4773912d..f601e7bd862791 100644
+--- a/drivers/mtd/parsers/tplink_safeloader.c
++++ b/drivers/mtd/parsers/tplink_safeloader.c
+@@ -23,8 +23,8 @@ static void *mtd_parser_tplink_safeloader_read_table(struct mtd_info *mtd)
+ 	struct safeloader_cmn_header hdr;
+ 	struct device_node *np;
+ 	size_t bytes_read;
+-	size_t offset;
+ 	size_t size;
++	u32 offset;
+ 	char *buf;
+ 	int err;
+ 
+@@ -34,14 +34,14 @@ static void *mtd_parser_tplink_safeloader_read_table(struct mtd_info *mtd)
+ 	else
+ 		np = of_get_child_by_name(np, "partitions");
+ 
+-	if (of_property_read_u32(np, "partitions-table-offset", (u32 *)&offset)) {
++	if (of_property_read_u32(np, "partitions-table-offset", &offset)) {
+ 		pr_err("Failed to get partitions table offset\n");
+ 		goto err_put;
+ 	}
+ 
+ 	err = mtd_read(mtd, offset, sizeof(hdr), &bytes_read, (uint8_t *)&hdr);
+ 	if (err && !mtd_is_bitflip(err)) {
+-		pr_err("Failed to read from %s at 0x%zx\n", mtd->name, offset);
++		pr_err("Failed to read from %s at 0x%x\n", mtd->name, offset);
+ 		goto err_put;
+ 	}
+ 
+-- 
+2.38.1
+

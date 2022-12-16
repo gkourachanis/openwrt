@@ -134,10 +134,22 @@ endef
 $(eval $(call KernelPackage,sound-seq))
 
 
+define KernelPackage/gameport
+  TITLE:=(Creative) Ensoniq AudioPCI 1371
+  KCONFIG:=CONFIG_GAMEPORT
+  DEPENDS:=@!TARGET_uml
+  FILES:=$(LINUX_DIR)/drivers/input/gameport/gameport.ko
+  AUTOLOAD:=$(call AutoLoad,36,gameport)
+  $(call AddDepends/sound)
+endef
+
+$(eval $(call KernelPackage,gameport))
+
+
 define KernelPackage/sound-ens1371
   TITLE:=(Creative) Ensoniq AudioPCI 1371
   KCONFIG:=CONFIG_SND_ENS1371
-  DEPENDS:=@PCI_SUPPORT +kmod-ac97
+  DEPENDS:=@PCI_SUPPORT +kmod-ac97 +kmod-gameport
   FILES:=$(LINUX_DIR)/sound/pci/snd-ens1371.ko
   AUTOLOAD:=$(call AutoLoad,36,snd-ens1371)
   $(call AddDepends/sound)
@@ -170,7 +182,7 @@ $(eval $(call KernelPackage,sound-i8x0))
 
 define KernelPackage/sound-via82xx
   TITLE:=VIA 82xx AC97 Controller
-  DEPENDS:=+kmod-ac97 +kmod-sound-mpu401
+  DEPENDS:=+kmod-ac97 +kmod-sound-mpu401 +kmod-gameport
   KCONFIG:=CONFIG_SND_VIA82XX
   FILES:=$(LINUX_DIR)/sound/pci/snd-via82xx.ko
   AUTOLOAD:=$(call AutoLoad,36,snd-via82xx)
@@ -526,6 +538,7 @@ define KernelPackage/sound-hda-intel
 	$(LINUX_DIR)/sound/hda/snd-intel-dspcfg.ko
   AUTOLOAD:=$(call AutoProbe,snd-hda-intel)
   $(call AddDepends/sound,kmod-sound-hda-core)
+  FILES+=$(LINUX_DIR)/sound/hda/snd-intel-sdw-acpi.ko
 endef
 
 define KernelPackage/sound-hda-intel/description

@@ -33,7 +33,7 @@ define KernelPackage/fs-afs
   DEFAULT:=n
   DEPENDS:=+kmod-rxrpc +kmod-dnsresolver +kmod-fs-fscache
   KCONFIG:=\
-	CONFIG_AFS_FS=m \
+	CONFIG_AFS_FS \
 	CONFIG_AFS_DEBUG=n \
 	CONFIG_AFS_FSCACHE=y
   FILES:=$(LINUX_DIR)/fs/afs/kafs.ko
@@ -83,22 +83,24 @@ endef
 $(eval $(call KernelPackage,fs-btrfs))
 
 
+
 define KernelPackage/fs-cifs
   SUBMENU:=$(FS_MENU)
   TITLE:=CIFS support
   KCONFIG:= \
-	CONFIG_SMBFS_COMMON@ge5.15 \
+	CONFIG_SMBFS_COMMON \
 	CONFIG_CIFS \
 	CONFIG_CIFS_DFS_UPCALL=n \
 	CONFIG_CIFS_UPCALL=n
   FILES:= \
-	$(LINUX_DIR)/fs/smbfs_common/cifs_arc4.ko@ge5.15 \
-	$(LINUX_DIR)/fs/smbfs_common/cifs_md4.ko@ge5.15 \
+	$(LINUX_DIR)/fs/smbfs_common/cifs_arc4.ko \
+	$(LINUX_DIR)/fs/smbfs_common/cifs_md4.ko \
 	$(LINUX_DIR)/fs/cifs/cifs.ko
   AUTOLOAD:=$(call AutoLoad,30,cifs)
   $(call AddDepends/nls)
   DEPENDS+= \
-    +LINUX_5_10:kmod-crypto-md4\
+    +kmod-fs-fscache \
+    +LINUX_5_10:kmod-crypto-md4 \
     +kmod-crypto-md5 \
     +kmod-crypto-sha256 \
     +kmod-crypto-sha512 \
@@ -109,9 +111,9 @@ define KernelPackage/fs-cifs
     +kmod-crypto-ccm \
     +kmod-crypto-ecb \
     +kmod-crypto-des \
-    +(LINUX_5_15):kmod-asn1-decoder \
-    +(LINUX_5_15):kmod-oid-registry \
-    +(LINUX_5_15):kmod-dnsresolver
+    +(LINUX_5_15||LINUX_6_1):kmod-asn1-decoder \
+    +(LINUX_5_15||LINUX_6_1):kmod-oid-registry \
+    +(LINUX_5_15||LINUX_6_1):kmod-dnsresolver
 endef
 
 define KernelPackage/fs-cifs/description
@@ -231,7 +233,7 @@ $(eval $(call KernelPackage,fs-ext4))
 define KernelPackage/fs-f2fs
   SUBMENU:=$(FS_MENU)
   TITLE:=F2FS filesystem support
-  DEPENDS:= +kmod-crypto-hash +kmod-crypto-crc32 +kmod-nls-base
+  DEPENDS:= +kmod-crypto-hash +kmod-crypto-crc32 +kmod-nls-base +kmod-lib-lz4
   KCONFIG:=CONFIG_F2FS_FS
   FILES:=$(LINUX_DIR)/fs/f2fs/f2fs.ko
   AUTOLOAD:=$(call AutoLoad,30,f2fs,1)
@@ -367,7 +369,7 @@ $(eval $(call KernelPackage,fs-msdos))
 define KernelPackage/fs-netfs
   SUBMENU:=$(FS_MENU)
   TITLE:=Network Filesystems support
-  DEPENDS:=@LINUX_5_15
+  DEPENDS:=@(LINUX_5_15||LINUX_6_1)
   KCONFIG:= CONFIG_NETFS_SUPPORT
   FILES:=$(LINUX_DIR)/fs/netfs/netfs.ko
   AUTOLOAD:=$(call AutoLoad,28,netfs)
@@ -531,7 +533,6 @@ define KernelPackage/fs-ntfs3
   KCONFIG:= CONFIG_NTFS3_FS CONFIG_NTFS3_FS_POSIX_ACL=y
   FILES:=$(LINUX_DIR)/fs/ntfs3/ntfs3.ko
   $(call AddDepends/nls)
-  DEPENDS+=@!LINUX_5_10
   AUTOLOAD:=$(call AutoLoad,80,ntfs3)
 endef
 

@@ -1,0 +1,149 @@
+From f902baa917b6c1f2d70d008b2ebbe5acf79ba392 Mon Sep 17 00:00:00 2001
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Mon, 14 Nov 2022 10:03:00 +0100
+Subject: [PATCH] dt-bindings: mtd: Remove useless file about partitions
+
+There is already a real partitions.yaml file, so assuming everybody
+knows hot to read yaml schema now, this text file is no longer needed,
+so drop it.
+
+Depending on the situation, the lines referring to this file are either
+dropped or edited to point to mtd.yaml which includes partition{,s}.yaml.
+
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Link: https://lore.kernel.org/linux-mtd/20221114090315.848208-3-miquel.raynal@bootlin.com
+---
+ .../devicetree/bindings/mtd/atmel-nand.txt    |  6 ++--
+ .../devicetree/bindings/mtd/ingenic,nand.yaml |  1 -
+ .../devicetree/bindings/mtd/lpc32xx-mlc.txt   |  2 +-
+ .../devicetree/bindings/mtd/lpc32xx-slc.txt   |  2 +-
+ .../devicetree/bindings/mtd/mtk-nand.txt      |  2 +-
+ .../devicetree/bindings/mtd/partition.txt     | 33 -------------------
+ drivers/mtd/parsers/Kconfig                   |  2 +-
+ 7 files changed, 6 insertions(+), 42 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/partition.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index 3aa297c97ab617..50645828ac20aa 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -45,10 +45,8 @@ Optional properties:
+ - atmel,rb: an integer identifying the native Ready/Busy pin. Only meaningful
+ 	    on sama5 SoCs.
+ 
+-All generic properties described in
+-Documentation/devicetree/bindings/mtd/{common,nand}.txt also apply to the NAND
+-device node, and NAND partitions should be defined under the NAND node as
+-described in Documentation/devicetree/bindings/mtd/partition.txt.
++All generic properties are described in the generic yaml files under
++Documentation/devicetree/bindings/mtd/.
+ 
+ * ECC engine (PMECC) bindings:
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
+index 8c272c842bfd3e..87b2944d0d1b5f 100644
+--- a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
++++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
+@@ -34,7 +34,6 @@ properties:
+     type: object
+     description:
+       Node containing description of fixed partitions.
+-      See Documentation/devicetree/bindings/mtd/partition.txt
+ 
+ patternProperties:
+   "^nand@[a-f0-9]$":
+diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
+index 6d60bc3063f51b..64c06aa05ac713 100644
+--- a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
++++ b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
+@@ -19,7 +19,7 @@ accuracy:)
+ - nxp,wr_low: WR_LOW
+ 
+ Optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
++- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+ 
+ Example:
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
+index d94edc0fc554bf..39f17630a3011f 100644
+--- a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
++++ b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
+@@ -20,7 +20,7 @@ clock speed:)
+ - nxp,rsetup: Read setup time (R_SETUP)
+ 
+ Optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
++- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+ 
+ Example:
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+index 4d3ec5e4ff8a31..839ea2f93d043a 100644
+--- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+@@ -131,7 +131,7 @@ Example:
+ 	};
+ 
+ NAND chip optional subnodes:
+-- Partitions, see Documentation/devicetree/bindings/mtd/partition.txt
++- Partitions, see Documentation/devicetree/bindings/mtd/mtd.yaml
+ 
+ Example:
+ 	nand@0 {
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+deleted file mode 100644
+index ead90e8274d6c7..00000000000000
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-Flash partitions in device tree
+-===============================
+-
+-Flash devices can be partitioned into one or more functional ranges (e.g. "boot
+-code", "nvram", "kernel").
+-
+-Different devices may be partitioned in a different ways. Some may use a fixed
+-flash layout set at production time. Some may use on-flash table that describes
+-the geometry and naming/purpose of each functional region. It is also possible
+-to see these methods mixed.
+-
+-To assist system software in locating partitions, we allow describing which
+-method is used for a given flash device. To describe the method there should be
+-a subnode of the flash device that is named 'partitions'. It must have a
+-'compatible' property, which is used to identify the method to use.
+-
+-When a single partition is represented with a DT node (it depends on a used
+-format) it may also be described using above rules ('compatible' and optionally
+-some extra properties / subnodes). It allows describing more complex,
+-hierarchical (multi-level) layouts and should be used if there is some
+-significant relation between partitions or some partition internally uses
+-another partitioning method.
+-
+-Available bindings are listed in the "partitions" subdirectory.
+-
+-
+-Deprecated: partitions defined in flash node
+-============================================
+-
+-For backwards compatibility partitions as direct subnodes of the flash device are
+-supported. This use is discouraged.
+-NOTE: also for backwards compatibility, direct subnodes that have a compatible
+-string are not considered partitions, as they may be used for other bindings.
+diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+index c258ba2a3a6f43..00dfdc934ac89b 100644
+--- a/drivers/mtd/parsers/Kconfig
++++ b/drivers/mtd/parsers/Kconfig
+@@ -75,7 +75,7 @@ config MTD_OF_PARTS
+ 	  This provides a open firmware device tree partition parser
+ 	  which derives the partition map from the children of the
+ 	  flash memory node, as described in
+-	  Documentation/devicetree/bindings/mtd/partition.txt.
++	  Documentation/devicetree/bindings/mtd/mtd.yaml.
+ 
+ config MTD_OF_PARTS_BCM4908
+ 	bool "BCM4908 partitioning support"
+-- 
+2.38.1
+
