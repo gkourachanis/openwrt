@@ -1,0 +1,23 @@
+Adopted to OpenWrt target. Most likely these changes go elsewhere when done right.
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -7,10 +7,15 @@
+ 
+ SET(LIBS)
+ IF(USE_LIBUBOX)
+-  ADD_DEFINITIONS(-DUSE_LIBUBOX)
+-  SET(LIBS ubox)
+-  FIND_PATH(ubox_include_dir libubox/utils.h)
+-  INCLUDE_DIRECTORIES(${ubox_include_dir})
++  find_library(ubox NAMES ubox)
++  IF(UBOX_FOUND)
++    ADD_DEFINITIONS(-DUSE_LIBUBOX)
++    SET(LIBS ${ubox})
++    FIND_PATH(ubox_include_dir libubox/utils.h)
++    INCLUDE_DIRECTORIES(${ubox_include_dir})
++  ELSE()
++    SET(SOURCES ${SOURCES} base64.c)
++  ENDIF()
+ ELSE()
+   SET(SOURCES ${SOURCES} base64.c)
+ ENDIF()
