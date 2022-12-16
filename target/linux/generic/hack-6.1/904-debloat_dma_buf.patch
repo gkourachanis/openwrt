@@ -1,0 +1,74 @@
+From e3692cb2fcd5ba1244512a0f43b8118f65f1c375 Mon Sep 17 00:00:00 2001
+From: Felix Fietkau <nbd@nbd.name>
+Date: Sat, 8 Jul 2017 08:20:43 +0200
+Subject: debloat: dmabuf
+
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+
+diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+--- a/drivers/base/Kconfig
++++ b/drivers/base/Kconfig
+@@ -198,7 +198,7 @@ config SOC_BUS
+ source "drivers/base/regmap/Kconfig"
+ 
+ config DMA_SHARED_BUFFER
+-	bool
++	tristate "DMA shared buffer support"
+ 	default n
+ 	select IRQ_WORK
+ 	help
+diff --git a/drivers/dma-buf/Makefile b/drivers/dma-buf/Makefile
+--- a/drivers/dma-buf/Makefile
++++ b/drivers/dma-buf/Makefile
+@@ -1,6 +1,17 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-y := dma-buf.o dma-fence.o dma-fence-array.o dma-fence-chain.o \
+-	 dma-fence-unwrap.o dma-resv.o
++
++dma-shared-buffer-y := \
++	dma-buf.o \
++	dma-fence.o \
++	dma-fence-array.o \
++	dma-fence-chain.o \
++	dma-fence-unwrap.o \
++	dma-resv.o
++
++obj-$(CONFIG_DMA_SHARED_BUFFER)	:= dma-shared-buffer.o
++
++dma-shared-buffer-objs :=  $(dma-shared-buffer-y)
++
+ obj-$(CONFIG_DMABUF_HEAPS)	+= dma-heap.o
+ obj-$(CONFIG_DMABUF_HEAPS)	+= heaps/
+ obj-$(CONFIG_SYNC_FILE)		+= sync_file.o
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -1589,4 +1589,5 @@ static void __exit dma_buf_deinit(void)
+ 	kern_unmount(dma_buf_mnt);
+ 	dma_buf_uninit_sysfs_statistics();
+ }
+-__exitcall(dma_buf_deinit);
++module_exit(dma_buf_deinit);
++MODULE_LICENSE("GPL");
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4331,6 +4331,7 @@ int wake_up_state(struct task_struct *p,
+ {
+ 	return try_to_wake_up(p, state, 0);
+ }
++EXPORT_SYMBOL_GPL(wake_up_state);
+ 
+ /*
+  * Perform scheduler related setup for a newly forked process p.
+diff --git a/fs/d_path.c b/fs/d_path.c
+--- a/fs/d_path.c
++++ b/fs/d_path.c
+@@ -313,6 +313,7 @@ char *dynamic_dname(struct dentry *dentr
+ 	buffer += buflen - sz;
+ 	return memcpy(buffer, temp, sz);
+ }
++EXPORT_SYMBOL_GPL(dynamic_dname);
+ 
+ char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
+ {

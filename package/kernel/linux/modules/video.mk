@@ -225,7 +225,7 @@ define KernelPackage/drm
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Direct Rendering Manager (DRM) support
   HIDDEN:=1
-  DEPENDS:=+kmod-dma-buf +kmod-i2c-core +PACKAGE_kmod-backlight:kmod-backlight \
+  DEPENDS:=+kmod-dma-shared-buffer +kmod-i2c-core +PACKAGE_kmod-backlight:kmod-backlight \
 	+((LINUX_5_15||LINUX_6_1)):kmod-fb
   KCONFIG:=CONFIG_DRM
   FILES:= \
@@ -471,7 +471,7 @@ endef
 
 define KernelPackage/video-videobuf2
   TITLE:=videobuf2 lib
-  DEPENDS:=+kmod-dma-buf
+  DEPENDS:=+kmod-dma-shared-buffer
   KCONFIG:= \
 	CONFIG_VIDEOBUF2_CORE \
 	CONFIG_VIDEOBUF2_MEMOPS \

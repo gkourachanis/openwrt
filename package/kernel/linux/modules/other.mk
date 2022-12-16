@@ -142,19 +142,82 @@ endef
 $(eval $(call KernelPackage,btsdio))
 
 
-define KernelPackage/dma-buf
+define KernelPackage/dma-shared-buffer
   SUBMENU:=$(OTHER_MENU)
   TITLE:=DMA shared buffer support
-  HIDDEN:=1
   KCONFIG:=CONFIG_DMA_SHARED_BUFFER
+  AUTOLOAD:=$(call AutoLoad,20,dma-shared-buffer)
+  FILES:=$(LINUX_DIR)/drivers/dma-buf/dma-shared-buffer.ko
   ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
     ifeq ($(strip $(CONFIG_KERNEL_GIT_CLONE_URI)),"")
-      FILES:=$(LINUX_DIR)/drivers/dma-buf/dma-shared-buffer.ko
+      define KernelPackage/dma-heap
+        SUBMENU:=$(OTHER_MENU)
+        TITLE:=DMA-BUF Userland Memory Heaps
+        KCONFIG:=CONFIG_DMABUF_HEAPS
+        AUTOLOAD:=$(call AutoLoad,20,dma-heap)
+        FILES:=$(LINUX_DIR)/drivers/dma-buf/dma-heap.ko
+        define KernelPackage/system-heap
+          SUBMENU:=$(OTHER_MENU)
+          TITLE:=DMA-BUF System Heap
+          KCONFIG:=CONFIG_DMABUF_HEAPS_SYSTEM
+          DEPENDS:=+kmod-dma-heap
+          AUTOLOAD:=$(call AutoLoad,20,system_heap)
+          FILES:=$(LINUX_DIR)/drivers/dma-buf/heaps/system_heap.ko
+        endef
+        define KernelPackage/cma-heap
+          SUBMENU:=$(OTHER_MENU)
+          TITLE:=DMA-BUF CMA Heap
+          KCONFIG:=CONFIG_DMABUF_HEAPS_CMA
+          DEPENDS:=+kmod-dma-heap
+          AUTOLOAD:=$(call AutoLoad,20,cma_heap)
+          FILES:=$(LINUX_DIR)/drivers/dma-buf/heaps/cma_heap.ko
+        endef
+      endef
+      define KernelPackage/sync-file
+        SUBMENU:=$(OTHER_MENU)
+        TITLE:=Explicit Synchronization Framework
+        KCONFIG:=CONFIG_SYNC_FILE
+        AUTOLOAD:=$(call AutoLoad,20,sync_file)
+        FILES:=$(LINUX_DIR)/drivers/dma-buf/sync_file.ko
+      endef
+      define KernelPackage/sw-sync
+        SUBMENU:=$(OTHER_MENU)
+        TITLE:=Sync File Validation Framework
+        KCONFIG:=CONFIG_SW_SYNC
+        DEPENDS:=+kmod-sync-file
+        AUTOLOAD:=$(call AutoLoad,20,sw_sync sync_debug)
+        FILES:= \
+		$(LINUX_DIR)/drivers/dma-buf/sw_sync.ko \
+		$(LINUX_DIR)/drivers/dma-buf/sync_debug.ko
+      endef
+      define KernelPackage/udmabuf
+        SUBMENU:=$(OTHER_MENU)
+        TITLE:=userspace dmabuf misc driver
+        KCONFIG:=CONFIG_UDMABUF
+        DEPENDS:=+kmod-dma-shared-buffer
+        AUTOLOAD:=$(call AutoLoad,20,udmabuf)
+        FILES:=$(LINUX_DIR)/drivers/dma-buf/udmabuf.ko
+      endef
+      define KernelPackage/dma-buf-sysfs-stats
+        SUBMENU:=$(OTHER_MENU)
+        TITLE:=DMA-BUF sysfs statistics (DEPRECATED)
+        KCONFIG:=CONFIG_DMABUF_SYSFS_STATS
+        DEPENDS:=+kmod-dma-shared-buffer
+        AUTOLOAD:=$(call AutoLoad,20,dma-buf-sysfs-stats)
+        FILES:=$(LINUX_DIR)/drivers/dma-buf/dma-buf-sysfs-stats.ko
+      endef
+      define KernelPackage/dmabuf-selftests
+        SUBMENU:=$(OTHER_MENU)
+        TITLE:=Selftests for the dma-buf interfaces
+        KCONFIG:=CONFIG_DMABUF_SELFTESTS
+        DEPENDS:=+kmod-dma-shared-buffer
+        AUTOLOAD:=$(call AutoLoad,20,dmabuf_selftests)
+        FILES:=$(LINUX_DIR)/drivers/dma-buf/dmabuf_selftests.ko
+      endef
     endif
   endif
-  AUTOLOAD:=$(call AutoLoad,20,dma-shared-buffer)
 endef
-$(eval $(call KernelPackage,dma-buf))
+$(eval $(call KernelPackage,dma-shared-buffer))
 
 
 define KernelPackage/eeprom-93cx6
