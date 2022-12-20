@@ -218,13 +218,11 @@ static int ubnt_ledbar_probe(struct i2c_client *client,
 	return ubnt_ledbar_apply_state(ledbar);
 }
 
-static int ubnt_ledbar_remove(struct i2c_client *client)
+static void ubnt_ledbar_remove(struct i2c_client *client)
 {
 	struct ubnt_ledbar *ledbar = i2c_get_clientdata(client);
 
 	mutex_destroy(&ledbar->lock);
-
-	return 0;
 }
 
 static const struct i2c_device_id ubnt_ledbar_id[] = {
