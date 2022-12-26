@@ -33,7 +33,6 @@ jobs:
       fail-fast: False
       matrix:
         include:
-          - target: malta/be
           - target: x86/64
     uses: ./.github/workflows/build.yml
     with:
