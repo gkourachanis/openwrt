@@ -1,7 +1,10 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
 include $(TOPDIR)/rules.mk
+include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=mt76
-PKG_RELEASE=5
+PKG_RELEASE=6
 
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=
@@ -14,7 +17,7 @@ PKG_MIRROR_HASH:=6fc25df4d28becd010ff4971b23731c08b53e69381a9e4c868091899712f78a
 
 PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 PKG_USE_NINJA:=0
-PKG_BUILD_PARALLEL:=1
+PKG_BUILD_PARALLEL:=0
 
 PKG_CONFIG_DEPENDS += \
 	CONFIG_PACKAGE_kmod-mt76-usb \
@@ -27,9 +30,8 @@ PKG_CONFIG_DEPENDS += \
 	CONFIG_PACKAGE_kmod-mt7603 \
 	CONFIG_PACKAGE_CFG80211_TESTMODE
 
-STAMP_CONFIGURED_DEPENDS := $(STAGING_DIR)/usr/include/mac80211-backport/backport/autoconf.h
+STAMP_CONFIGURED_DEPENDS := $(LINUX_DIR)/include/generated/autoconf.h
 
-include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
@@ -286,13 +288,27 @@ TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include/libnl-tiny
 
 NOSTDINC_FLAGS := \
 	$(KERNEL_NOSTDINC_FLAGS) \
+	-I$(PKG_BUILD_DIR)/netdev-net-include \
+	-I$(LINUX_DIR)/include \
+	-I$(LINUX_DIR)/include/generated \
 	-I$(PKG_BUILD_DIR) \
-	-I$(STAGING_DIR)/usr/include/mac80211-backport/uapi \
-	-I$(STAGING_DIR)/usr/include/mac80211-backport \
-	-I$(STAGING_DIR)/usr/include/mac80211/uapi \
-	-I$(STAGING_DIR)/usr/include/mac80211 \
-	-include backport/autoconf.h \
-	-include backport/backport.h
+
+
+NETDEV_NET_DL_SOC:=include/linux/soc
+NETDEV_NET_DL_SOC_VENDOR:=mediatek
+NETDEV_NET_URL_FILE:=$(NETDEV_NET_DL_SOC_VENDOR).tar.gz
+NETDEV_NET_DIR:=$(PKG_BUILD_DIR)/netdev-net-$(NETDEV_NET_DL_SOC)/$(NETDEV_NET_DL_SOC_VENDOR)
+NETDEV_NET_GIT:=linux/kernel/git/netdev/net.git
+NETDEV_NET_VERSION:=7e68dd7d07a28faa2e6574dd6b9dbd90cdeaae91
+NETDEV_NET_FILE:=netdev-net-$(NETDEV_NET_VERSION)-$(subst /,-,$(NETDEV_NET_DL_SOC))-$(NETDEV_NET_URL_FILE)
+
+define Download/$(NETDEV_NET_GIT)
+  URL:=https://kernel.googlesource.com/pub/scm/$(NETDEV_NET_GIT)/+archive/$(NETDEV_NET_VERSION)/$(NETDEV_NET_DL_SOC)
+  URL_FILE:=$(NETDEV_NET_URL_FILE)
+  FILE:=$(NETDEV_NET_FILE)
+  HASH:=skip
+endef
+$(eval $(call Download,$(NETDEV_NET_GIT)))
 
 ifdef CONFIG_PACKAGE_MAC80211_MESH
   NOSTDINC_FLAGS += -DCONFIG_MAC80211_MESH
@@ -301,6 +317,13 @@ endif
 ifdef CONFIG_PACKAGE_CFG80211_TESTMODE
   NOSTDINC_FLAGS += -DCONFIG_NL80211_TESTMODE
   PKG_MAKE_FLAGS += CONFIG_NL80211_TESTMODE=y
+else
+  NOSTDINC_FLAGS += -UCONFIG_NL80211_TESTMODE
+  PKG_MAKE_FLAGS += CONFIG_NL80211_TESTMODE=n
+
+  define Build/Configure
+	sed -i -E '/^extern const struct nla_policy mt76_tm_policy/{s/^/\/\/ /g}' $(PKG_BUILD_DIR)/testmode.h
+  endef
 endif
 
 ifdef CONFIG_PACKAGE_kmod-mt76-usb
@@ -378,13 +401,27 @@ ifdef CONFIG_PACKAGE_kmod-mt7921e
   PKG_MAKE_FLAGS += CONFIG_MT7921E=m
 endif
 
+define Build/$(NETDEV_NET_GIT)
+	@[ \
+		`gunzip -c $(DL_DIR)/$(NETDEV_NET_FILE) | tar -x -O | sha256sum | awk '{ print $$$$1 }'` == \
+		'3dad10a563372ead689825abfe07cdb08a011370631ddf63f126087b8c29602e' \
+	] && { \
+		mkdir -p $(NETDEV_NET_DIR); \
+		gunzip -c $(DL_DIR)/$(NETDEV_NET_FILE) | tar -xf - -C $(NETDEV_NET_DIR); \
+	} || false;
+endef
+
+Build/Prepare += $(call Build/$(NETDEV_NET_GIT))
+
 define Build/Compile
 	+$(KERNEL_MAKE) $(PKG_JOBS) \
 		$(PKG_MAKE_FLAGS) \
 		M="$(PKG_BUILD_DIR)" \
 		NOSTDINC_FLAGS="$(NOSTDINC_FLAGS)" \
 		modules
+  ifdef CONFIG_PACKAGE_CFG80211_TESTMODE
 	$(MAKE) -C $(PKG_BUILD_DIR)/tools
+  endif
 endef
 
 define Build/Install
@@ -392,7 +429,7 @@ define Build/Install
 endef
 
 define Package/kmod-mt76/install
-	true
+	:
 endef
 
 define KernelPackage/mt76x0-common/install
