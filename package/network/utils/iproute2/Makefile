@@ -175,8 +175,10 @@ TARGET_CFLAGS += -ffunction-sections -fdata-sections -flto
 TARGET_LDFLAGS += -Wl,--gc-sections -Wl,--as-needed
 TARGET_CPPFLAGS += -I$(STAGING_DIR)/usr/include/libnl-tiny
 
+IPROUTE2_KERNEL_INCLUDE := --include_dir $(LINUX_DIR)/include/uapi --include_dir $(LINUX_DIR)/tools/include
+
 MAKE_FLAGS += \
-	KERNEL_INCLUDE="$(LINUX_DIR)/include/uapi" \
+	KERNEL_INCLUDE="$(IPROUTE2_KERNEL_INCLUDE)" \
 	SHARED_LIBS=$(SHARED_LIBS) \
 	IP_CONFIG_TINY=$(IP_CONFIG_TINY) \
 	BUILD_VARIANT=$(BUILD_VARIANT) \
