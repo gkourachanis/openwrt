@@ -50,4 +50,4 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call KernelPackage,rtl8812au-ct))
+#$(eval $(call KernelPackage,rtl8812au-ct))

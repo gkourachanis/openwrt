@@ -1,4 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
 include $(TOPDIR)/rules.mk
+include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=ath10k-ct
 PKG_RELEASE:=$(AUTORELEASE)
@@ -6,24 +9,26 @@ PKG_RELEASE:=$(AUTORELEASE)
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=
 
-PKG_SOURCE_URL:=https://github.com/greearb/ath10k-ct.git
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_DATE:=2022-05-13
-PKG_SOURCE_VERSION:=f808496fcc6b1f68942914117aebf8b3f8d52bb3
-PKG_MIRROR_HASH:=39527b3408696594eda5579521a9fb798417be4dda73fa08e8b3a8c7b0d3f3d9
+PKG_SOURCE_URL:=https://github.com/gkourachanis/ath10k-ct.git
+PKG_SOURCE_DATE:=2022-12-22
+PKG_SOURCE_VERSION:=724734834c750253f3332ba3b5a574c9aa3378bf
+PKG_MIRROR_HASH:=bd3d7b020181de30fd7f91979585ac47b07f622d04b061aad50a8f583169d95e
+#PKG_SOURCE_URL:=https://github.com/greearb/ath10k-ct.git
+#PKG_SOURCE_DATE:=2022-05-13
+#PKG_SOURCE_VERSION:=f808496fcc6b1f68942914117aebf8b3f8d52bb3
+#PKG_MIRROR_HASH:=39527b3408696594eda5579521a9fb798417be4dda73fa08e8b3a8c7b0d3f3d9
 
-# Build the 5.15 ath10k-ct driver version.
-# Probably this should match as closely as
-# possible to whatever mac80211 backports version is being used.
-CT_KVER="-5.15"
+CT_KVER="-6.1"
+#CT_KVER="-5.15"
 
-PKG_MAINTAINER:=Ben Greear <greearb@candelatech.com>
+#PKG_MAINTAINER:=Ben Greear <greearb@candelatech.com>
 PKG_BUILD_PARALLEL:=1
 PKG_EXTMOD_SUBDIRS:=ath10k$(CT_KVER)
 
-STAMP_CONFIGURED_DEPENDS := $(STAGING_DIR)/usr/include/mac80211-backport/backport/autoconf.h
+STAMP_CONFIGURED_DEPENDS := $(LINUX_DIR)/include/generated/autoconf.h
+#STAMP_CONFIGURED_DEPENDS := $(STAGING_DIR)/usr/include/mac80211-backport/backport/autoconf.h
 
-include $(INCLUDE_DIR)/kernel.mk
 include $(INCLUDE_DIR)/package.mk
 
 define KernelPackage/ath10k-ct
@@ -54,13 +59,9 @@ endef
 
 NOSTDINC_FLAGS := \
 	$(KERNEL_NOSTDINC_FLAGS) \
+	-I$(LINUX_DIR)/include \
+	-I$(LINUX_DIR)/include/generated \
 	-I$(PKG_BUILD_DIR) \
-	-I$(STAGING_DIR)/usr/include/mac80211-backport/uapi \
-	-I$(STAGING_DIR)/usr/include/mac80211-backport \
-	-I$(STAGING_DIR)/usr/include/mac80211/uapi \
-	-I$(STAGING_DIR)/usr/include/mac80211 \
-	-include backport/autoconf.h \
-	-include backport/backport.h
 
 ifdef CONFIG_PACKAGE_MAC80211_MESH
   NOSTDINC_FLAGS += -DCONFIG_MAC80211_MESH
@@ -103,7 +104,8 @@ ifeq ($(BUILD_VARIANT),smallbuffers)
 endif
 
 define Build/Configure
-	cp $(STAGING_DIR)/usr/include/mac80211/ath/*.h $(PKG_BUILD_DIR)
+	cp $(LINUX_DIR)/drivers/net/wireless/ath/{ath,dfs_pattern_detector,regd,spectral_common}.h $(PKG_BUILD_DIR)
+#	cp $(STAGING_DIR)/usr/include/mac80211/ath/*.h $(PKG_BUILD_DIR)
 endef
 
 ifneq ($(findstring c,$(OPENWRT_VERBOSE)),)
@@ -117,5 +119,5 @@ define Build/Compile
 		modules
 endef
 
-$(eval $(call KernelPackage,ath10k-ct))
-$(eval $(call KernelPackage,ath10k-ct-smallbuffers))
+#$(eval $(call KernelPackage,ath10k-ct))
+#$(eval $(call KernelPackage,ath10k-ct-smallbuffers))

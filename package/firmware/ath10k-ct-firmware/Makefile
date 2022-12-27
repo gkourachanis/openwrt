@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ath10k-ct-firmware
@@ -621,18 +623,18 @@ endef
 
 
 $(eval $(call BuildPackage,ath10k-firmware-qca9887-ct))
-$(eval $(call BuildPackage,ath10k-firmware-qca9887-ct-full-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca9887-ct-full-htt))
 $(eval $(call BuildPackage,ath10k-firmware-qca988x-ct))
-$(eval $(call BuildPackage,ath10k-firmware-qca988x-ct-full-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca988x-ct-full-htt))
 $(eval $(call BuildPackage,ath10k-firmware-qca99x0-ct))
-$(eval $(call BuildPackage,ath10k-firmware-qca99x0-ct-full-htt))
-$(eval $(call BuildPackage,ath10k-firmware-qca99x0-ct-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca99x0-ct-full-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca99x0-ct-htt))
 $(eval $(call BuildPackage,ath10k-firmware-qca9984-ct))
-$(eval $(call BuildPackage,ath10k-firmware-qca9984-ct-full-htt))
-$(eval $(call BuildPackage,ath10k-firmware-qca9984-ct-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca9984-ct-full-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca9984-ct-htt))
 $(eval $(call BuildPackage,ath10k-firmware-qca4019-ct))
-$(eval $(call BuildPackage,ath10k-firmware-qca4019-ct-full-htt))
-$(eval $(call BuildPackage,ath10k-firmware-qca4019-ct-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca4019-ct-full-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca4019-ct-htt))
 $(eval $(call BuildPackage,ath10k-firmware-qca9888-ct))
-$(eval $(call BuildPackage,ath10k-firmware-qca9888-ct-full-htt))
-$(eval $(call BuildPackage,ath10k-firmware-qca9888-ct-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca9888-ct-full-htt))
+#$(eval $(call BuildPackage,ath10k-firmware-qca9888-ct-htt))
