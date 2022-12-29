@@ -10,12 +10,12 @@ FS_MENU:=Filesystems
 define KernelPackage/fs-9p
   SUBMENU:=$(FS_MENU)
   TITLE:=Plan 9 Resource Sharing Support
-  DEPENDS:=+kmod-9pnet
+  DEPENDS:=+kmod-9pnet \
+	$(call CheckKconfig,CONFIG_9P_FSCACHE=y,+kmod-fs-fscache)
   KCONFIG:=\
 	CONFIG_9P_FS \
 	CONFIG_9P_FS_POSIX_ACL=n \
-	CONFIG_9P_FS_SECURITY=n \
-	CONFIG_9P_FSCACHE=n
+	CONFIG_9P_FS_SECURITY=n
   FILES:=$(LINUX_DIR)/fs/9p/9p.ko
   AUTOLOAD:=$(call AutoLoad,30,9p)
 endef
@@ -381,7 +381,8 @@ $(eval $(call KernelPackage,fs-netfs))
 define KernelPackage/fs-nfs
   SUBMENU:=$(FS_MENU)
   TITLE:=NFS filesystem client support
-  DEPENDS:=+kmod-fs-nfs-common +kmod-dnsresolver
+  DEPENDS:=+kmod-fs-nfs-common +kmod-dnsresolver \
+	$(call CheckKconfig,CONFIG_NFS_FSCACHE=y,+kmod-fs-fscache)
   KCONFIG:= \
 	CONFIG_NFS_FS \
 	CONFIG_NFS_USE_LEGACY_DNS=n \
@@ -398,13 +399,23 @@ endef
 $(eval $(call KernelPackage,fs-nfs))
 
 
+define KernelPackage/sunrpc
+  SUBMENU:=$(FS_MENU)
+  TITLE:=SunRPC protocol support
+  KCONFIG:=CONFIG_SUNRPC
+  FILES:=$(LINUX_DIR)/net/sunrpc/sunrpc.ko
+  AUTOLOAD:=$(call AutoLoad,30,sunrpc)
+endef
+
+$(eval $(call KernelPackage,sunrpc))
+
+
 define KernelPackage/fs-nfs-common
   SUBMENU:=$(FS_MENU)
   TITLE:=Common NFS filesystem modules
-  DEPENDS:=+kmod-oid-registry
+  DEPENDS:=+kmod-oid-registry +kmod-sunrpc
   KCONFIG:= \
 	CONFIG_LOCKD \
-	CONFIG_SUNRPC \
 	CONFIG_GRACE_PERIOD \
 	CONFIG_NFS_V4=y \
 	CONFIG_NFS_V4_1=y \
@@ -414,10 +425,9 @@ define KernelPackage/fs-nfs-common
 	CONFIG_NFS_V4_2_READ_PLUS=n
   FILES:= \
 	$(LINUX_DIR)/fs/lockd/lockd.ko \
-	$(LINUX_DIR)/net/sunrpc/sunrpc.ko \
 	$(LINUX_DIR)/fs/nfs_common/grace.ko \
 	$(LINUX_DIR)/fs/nfs_common/nfs_ssc.ko
-  AUTOLOAD:=$(call AutoLoad,30,grace sunrpc lockd)
+  AUTOLOAD:=$(call AutoLoad,30,grace lockd)
 endef
 
 $(eval $(call KernelPackage,fs-nfs-common))
@@ -452,10 +462,22 @@ endef
 $(eval $(call KernelPackage,fs-nfs-common-rpcsec))
 
 
+define KernelPackage/fs-nfs-acl
+  SUBMENU:=$(FS_MENU)
+  TITLE:=Access Control Lists support
+  DEPENDS:=+kmod-sunrpc
+  KCONFIG:=CONFIG_NFS_ACL_SUPPORT
+  FILES:=$(LINUX_DIR)/fs/nfs_common/nfs_acl.ko
+  AUTOLOAD:=$(call AutoLoad,41,nfs_acl)
+endef
+
+$(eval $(call KernelPackage,fs-nfs-acl))
+
+
 define KernelPackage/fs-nfs-v3
   SUBMENU:=$(FS_MENU)
   TITLE:=NFS3 filesystem client support
-  DEPENDS:=+kmod-fs-nfs
+  DEPENDS:=+kmod-fs-nfs +kmod-fs-nfs-acl
   FILES:= \
 	$(LINUX_DIR)/fs/nfs/nfsv3.ko
   AUTOLOAD:=$(call AutoLoad,41,nfsv3)
@@ -489,7 +511,7 @@ $(eval $(call KernelPackage,fs-nfs-v4))
 define KernelPackage/fs-nfsd
   SUBMENU:=$(FS_MENU)
   TITLE:=NFS kernel server support
-  DEPENDS:=+kmod-fs-nfs-common +kmod-fs-exportfs +kmod-fs-nfs-common-rpcsec
+  DEPENDS:=+kmod-fs-nfs-common +kmod-fs-exportfs +kmod-fs-nfs-common-rpcsec +kmod-fs-nfs-acl
   KCONFIG:= \
 	CONFIG_NFSD \
 	CONFIG_NFSD_V4=y \

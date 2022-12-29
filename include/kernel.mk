@@ -299,3 +299,9 @@ kernel_patchver_eq=$(call kernel_version_cmp,-eq,$(KERNEL_PATCHVER),$(1))
 kernel_patchver_le=$(call kernel_version_cmp,-le,$(KERNEL_PATCHVER),$(1))
 kernel_patchver_lt=$(call kernel_version_cmp,-lt,$(KERNEL_PATCHVER),$(1))
 
+LINUX_DIR_KCONFIG_LIST_CMD := $(SCRIPT_DIR)/kconfig.pl $(LINUX_DIR)/.config
+LINUX_DIR_KCONFIG_LIST_MD5 := $(shell $(MKHASH) md5 <($(call LINUX_DIR_KCONFIG_LIST_CMD)))
+LINUX_DIR_KCONFIG_LIST := $(shell $(call LINUX_DIR_KCONFIG_LIST_CMD) | sed -nE 's/^(CONFIG_.*)/\1/p')
+
+CheckKconfig = $(if $(filter $(1),$(LINUX_DIR_KCONFIG_LIST)),$(2),)
+
