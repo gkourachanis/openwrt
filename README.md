@@ -1,4 +1,4 @@
-## About this fork
+## Abandoned fork, please ignore
 
 The patches that I've added on the v6.0.8 apply properly, but I'm not sure if they are needed.
 Plus I only care about x86 and most of them I haven't given attention on what they do and therefore I don't use them at all.
