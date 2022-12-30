@@ -27,7 +27,7 @@ Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
 -	REG_SET_BIT(ah, AR_DIAG_SW, AR_DIAG_RX_ABORT | AR_DIAG_RX_DIS);
 +	u32 reg = AR_DIAG_RX_DIS | AR_DIAG_RX_ABORT;
 +
-+	if (!IS_ENABLED(CPTCFG_ATH9K_TX99))
++	if (!IS_ENABLED(CONFIG_ATH9K_TX99))
 +		reg |= AR_DIAG_FORCE_RX_CLEAR;
 +	REG_SET_BIT(ah, AR_DIAG_SW, reg);
  

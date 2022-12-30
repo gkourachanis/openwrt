@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2007-2015 OpenWrt.org
+# Copyright (C) 2022 OpenWrt.org
 #
 # This is free software, licensed under the GNU General Public License v2.
 # See /LICENSE for more information.
@@ -9,24 +9,49 @@ include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=mac80211
+PKG_FLAGS:=hold
 
-PKG_VERSION:=6.1-rc8
-PKG_RELEASE:=2
-# PKG_SOURCE_URL:=@KERNEL/linux/kernel/projects/backports/stable/v5.15.58/
-PKG_SOURCE_URL:=http://mirror2.openwrt.org/sources/
-PKG_HASH:=7f3d96c2573183cd79d6a3ebe5e1b7b73c19d1326d443c85b69c4181f14e6e2b
+PKG_VERSION:=6.1
+PKG_RELEASE:=1
 
-PKG_SOURCE:=backports-$(PKG_VERSION).tar.xz
-PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/backports-$(PKG_VERSION)
-PKG_BUILD_PARALLEL:=1
+PKG_BUILD_DIR:=$(KERNEL_BUILD_DIR)/packages-$(PKG_NAME)
+PKG_BUILD_PARALLEL:=0
 
-PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
+PKG_LICENSE:=GPL-2.0
+PKG_LICENSE_FILES:=
+
+export SHELL:=/bin/sh
+.ONESHELL:
+.SHELLFLAGS = -ec
+
+include $(INCLUDE_DIR)/package.mk
+
+ifeq ($(DUMP),)
+  STAMP_BUILT:=$(STAMP_BUILT)_$(call LINUX_DIR_KCONFIG_LIST_MD5)
+  -include $(LINUX_DIR)/.config
+endif
+
+define Build/Prepare
+	mkdir -p $(PKG_BUILD_DIR)
+endef
+
+define Build/Configure
+endef
+
+define Build/Compile
+endef
+
+define KernelPackage/hooks
+endef
+
+define KernelPackage/depends
+endef
 
 PKG_DRIVERS = \
 	mac80211-hwsim \
 	mt7601u \
-	rsi91x rsi91x-usb rsi91x-sdio\
-	wlcore wl12xx wl18xx
+	btrsi rsi91x rsi91x-usb rsi91x-sdio \
+	wlcore wl12xx wl18xx \
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_kmod-mac80211 \
@@ -38,24 +63,12 @@ PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_IWLWIFI_DEBUGFS \
 	CONFIG_PACKAGE_RTLWIFI_DEBUG \
 
-include $(INCLUDE_DIR)/package.mk
-
-WMENU:=Wireless Drivers
-
-define KernelPackage/mac80211/Default
-  SUBMENU:=$(WMENU)
-  URL:=https://wireless.wiki.kernel.org/
-  MAINTAINER:=Felix Fietkau <nbd@nbd.name>
-endef
-
 config_package=$(if $(CONFIG_PACKAGE_kmod-$(1)),m)
 
 config-y:= \
 	WLAN \
 	CFG80211_CERTIFICATION_ONUS \
 	MAC80211_RC_MINSTREL \
-	MAC80211_RC_MINSTREL_HT \
-	MAC80211_RC_MINSTREL_VHT \
 	MAC80211_RC_DEFAULT_MINSTREL \
 	WLAN_VENDOR_ADMTEK \
 	WLAN_VENDOR_ATH \
@@ -71,13 +84,25 @@ config-y:= \
 	WLAN_VENDOR_RSI \
 	WLAN_VENDOR_ST \
 	WLAN_VENDOR_TI \
-	WLAN_VENDOR_ZYDAS \
+	WLAN_VENDOR_ZYDAS
 
 config-$(call config_package,cfg80211) += CFG80211
 config-$(CONFIG_PACKAGE_CFG80211_TESTMODE) += NL80211_TESTMODE
 
 config-$(call config_package,mac80211) += MAC80211
 config-$(CONFIG_PACKAGE_MAC80211_MESH) += MAC80211_MESH
+
+PKG_CONFIG_DEPENDS += \
+	$(patsubst %,CONFIG_PACKAGE_kmod-%,$(PKG_DRIVERS))
+
+#
+WMENU:=Wireless Drivers
+
+define KernelPackage/mac80211/Default
+  SUBMENU:=$(WMENU)
+  URL:=https://wireless.wiki.kernel.org/
+  MAINTAINER:=Felix Fietkau <nbd@nbd.name>
+endef
 
 include ath.mk
 include broadcom.mk
@@ -86,21 +111,16 @@ include marvell.mk
 include ralink.mk
 include realtek.mk
 
-PKG_CONFIG_DEPENDS += \
-	$(patsubst %,CONFIG_PACKAGE_kmod-%,$(PKG_DRIVERS))
-
 define KernelPackage/cfg80211
   $(call KernelPackage/mac80211/Default)
   TITLE:=cfg80211 - wireless configuration API
   DEPENDS+= +iw +iwinfo +wireless-regdb +USE_RFKILL:kmod-rfkill
   ABI_VERSION:=$(PKG_VERSION)-$(PKG_RELEASE)
-  FILES:= \
-	$(PKG_BUILD_DIR)/compat/compat.ko \
-	$(PKG_BUILD_DIR)/net/wireless/cfg80211.ko
+  FILES:=$(LINUX_DIR)/net/wireless/cfg80211.ko
 endef
 
 define KernelPackage/cfg80211/description
-cfg80211 is the Linux wireless LAN (802.11) configuration API.
+ cfg80211 is the Linux wireless LAN (802.11) configuration API.
 endef
 
 define KernelPackage/cfg80211/config
@@ -116,7 +136,6 @@ define KernelPackage/cfg80211/config
   endif
 endef
 
-
 define KernelPackage/mac80211
   $(call KernelPackage/mac80211/Default)
   TITLE:=Linux 802.11 Wireless Networking Stack
@@ -124,7 +143,7 @@ define KernelPackage/mac80211
   DEPENDS+= +kmod-cfg80211 +kmod-crypto-cmac +kmod-crypto-ccm +kmod-crypto-gcm +hostapd-common
   KCONFIG:=\
 	CONFIG_AVERAGE=y
-  FILES:= $(PKG_BUILD_DIR)/net/mac80211/mac80211.ko
+  FILES:= $(LINUX_DIR)/net/mac80211/mac80211.ko
   ABI_VERSION:=$(PKG_VERSION)-$(PKG_RELEASE)
   MENU:=1
 endef
@@ -157,38 +176,47 @@ define KernelPackage/mac80211/config
 endef
 
 define KernelPackage/mac80211/description
-Generic IEEE 802.11 Networking Stack (mac80211)
+ Generic IEEE 802.11 Networking Stack (mac80211)
 endef
 
 define KernelPackage/mac80211-hwsim
   $(call KernelPackage/mac80211/Default)
   TITLE:=mac80211 HW simulation device
   DEPENDS+= +kmod-mac80211 +@DRIVER_11AX_SUPPORT +@DRIVER_11AC_SUPPORT
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/mac80211_hwsim.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/mac80211_hwsim.ko
   AUTOLOAD:=$(call AutoProbe,mac80211_hwsim)
 endef
-
 
 define KernelPackage/mt7601u
   $(call KernelPackage/mac80211/Default)
   TITLE:=MT7601U-based USB dongles Wireless Driver
   DEPENDS+= +kmod-mac80211 @USB_SUPPORT +kmod-usb-core +mt7601u-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/mediatek/mt7601u/mt7601u.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/mediatek/mt7601u/mt7601u.ko
   AUTOLOAD:=$(call AutoProbe,mt7601u)
+endef
+
+define KernelPackage/btrsi
+  $(call KernelPackage/mac80211/Default)
+  TITLE:=Redpine BT driver
+  DEPENDS+= +kmod-bluetooth
+  KCONFIG:=CONFIG_BT_HCIRSI
+  FILES:=$(LINUX_DIR)/drivers/bluetooth/btrsi.ko
+  AUTOLOAD:=$(call AutoProbe,btrsi)
 endef
 
 define KernelPackage/rsi91x
   $(call KernelPackage/mac80211/Default)
   TITLE:=Redpine Signals Inc 91x WLAN driver support
-  DEPENDS+= +kmod-mac80211 +rs9113-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/rsi/rsi_91x.ko
+  DEPENDS+= +kmod-mac80211 +rs9113-firmware +kmod-btrsi
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/rsi/rsi_91x.ko
+  AUTOLOAD:=$(call AutoProbe,rsi91x)
 endef
 
 define KernelPackage/rsi91x-usb
   $(call KernelPackage/mac80211/Default)
   TITLE:=Redpine Signals USB bus support
   DEPENDS+=@USB_SUPPORT +kmod-usb-core +kmod-mac80211 +kmod-rsi91x +rs9113-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/rsi/rsi_usb.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/rsi/rsi_usb.ko
   AUTOLOAD:=$(call AutoProbe,rsi_usb)
 endef
 
@@ -196,18 +224,17 @@ define KernelPackage/rsi91x-sdio
   $(call KernelPackage/mac80211/Default)
   TITLE:=Redpine Signals SDIO bus support
   DEPENDS+= +kmod-mac80211 +kmod-mmc +kmod-rsi91x +rs9113-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/rsi/rsi_sdio.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/rsi/rsi_sdio.ko
   AUTOLOAD:=$(call AutoProbe,rsi_sdio)
 endef
-
 
 define KernelPackage/wlcore
   $(call KernelPackage/mac80211/Default)
   TITLE:=TI common driver part
   DEPENDS+= +kmod-mmc +kmod-mac80211
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ti/wlcore/wlcore.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ti/wlcore/wlcore_sdio.ko
+	$(LINUX_DIR)/drivers/net/wireless/ti/wlcore/wlcore.ko \
+	$(LINUX_DIR)/drivers/net/wireless/ti/wlcore/wlcore_sdio.ko
   AUTOLOAD:=$(call AutoProbe,wlcore wlcore_sdio)
 endef
 
@@ -220,7 +247,7 @@ define KernelPackage/wl12xx
   TITLE:=Driver for TI WL12xx
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/wl12xx
   DEPENDS+= +kmod-wlcore +wl12xx-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ti/wl12xx/wl12xx.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ti/wl12xx/wl12xx.ko
   AUTOLOAD:=$(call AutoProbe,wl12xx)
 endef
 
@@ -233,7 +260,7 @@ define KernelPackage/wl18xx
   TITLE:=Driver for TI WL18xx
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/wl18xx
   DEPENDS+= +kmod-wlcore +wl18xx-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ti/wl18xx/wl18xx.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ti/wl18xx/wl18xx.ko
   AUTOLOAD:=$(call AutoProbe,wl18xx)
 endef
 

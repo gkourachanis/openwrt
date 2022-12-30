@@ -294,7 +294,7 @@ Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 -		kfree(to_txq_info(sta->sta.txq[0]));
 +	kfree(to_txq_info(sta->sta.txq[0]));
  	kfree(rcu_dereference_raw(sta->sta.rates));
- #ifdef CPTCFG_MAC80211_MESH
+ #ifdef CONFIG_MAC80211_MESH
  	kfree(sta->mesh);
 @@ -527,6 +524,8 @@ __sta_info_alloc(struct ieee80211_sub_if
  	struct ieee80211_local *local = sdata->local;
@@ -345,7 +345,7 @@ Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 +	kfree(to_txq_info(sta->sta.txq[0]));
  free:
  	sta_info_free_link(&sta->deflink);
- #ifdef CPTCFG_MAC80211_MESH
+ #ifdef CONFIG_MAC80211_MESH
 @@ -1959,9 +1954,6 @@ ieee80211_sta_ps_deliver_response(struct
  		 * TIM recalculation.
  		 */

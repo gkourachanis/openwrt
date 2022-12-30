@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2022 OpenWrt.org
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+
 PKG_DRIVERS += \
 	b43 brcmsmac brcmfmac brcmutil
 
@@ -43,39 +50,39 @@ ifneq ($(CONFIG_B43_FW_6_30),)
   PKG_B43_FWV4_SOURCE_URL:=http://www.lwfinger.com/b43-firmware/
   PKG_B43_FWV4_HASH:=a07c3b6b277833c7dbe61daa511f908cd66c5e2763eb7a0859abc36cd9335c2d
 else
-ifneq ($(CONFIG_B43_FW_5_10),)
-  PKG_B43_FWV4_NAME:=broadcom-wl
-  PKG_B43_FWV4_VERSION:=5.10.56.27.3
-  PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/driver/wl_apsta/wl_prebuilt.o
-  PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)_mipsel.tar.bz2
-  PKG_B43_FWV4_SOURCE_URL:=@OPENWRT
-  PKG_B43_FWV4_HASH:=26a8c370f48fc129d0731cfd751c36cae1419b0bc8ca35781126744e60eae009
-else
-ifneq ($(CONFIG_B43_FW_4_178),)
-  PKG_B43_FWV4_NAME:=broadcom-wl
-  PKG_B43_FWV4_VERSION:=4.178.10.4
-  PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/linux/wl_apsta.o
-  PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION).tar.bz2
-  PKG_B43_FWV4_SOURCE_URL:=@OPENWRT
-  PKG_B43_FWV4_HASH:=32f6ad98facbb9045646fdc8b54bb03086d204153253f9c65d0234a5d90ae53f
-else
-ifneq ($(CONFIG_B43_FW_5_100_138),)
-  PKG_B43_FWV4_NAME:=broadcom-wl
-  PKG_B43_FWV4_VERSION:=5.100.138
-  PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/linux/wl_apsta.o
-  PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION).tar.bz2
-  PKG_B43_FWV4_SOURCE_URL:=http://www.lwfinger.com/b43-firmware/
-  PKG_B43_FWV4_HASH:=f1e7067aac5b62b67b8b6e4c517990277804339ac16065eb13c731ff909ae46f
-else
-  PKG_B43_FWV4_NAME:=broadcom-wl
-  PKG_B43_FWV4_VERSION:=4.150.10.5
-  PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/driver/wl_apsta_mimo.o
-  PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION).tar.bz2
-  PKG_B43_FWV4_SOURCE_URL:=@OPENWRT
-  PKG_B43_FWV4_HASH:=a9f4e276a4d8d3a1cd0f2eb87080ae89b77f0a7140f06d4e9e2135fc44fdd533
-endif
-endif
-endif
+  ifneq ($(CONFIG_B43_FW_5_10),)
+    PKG_B43_FWV4_NAME:=broadcom-wl
+    PKG_B43_FWV4_VERSION:=5.10.56.27.3
+    PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/driver/wl_apsta/wl_prebuilt.o
+    PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)_mipsel.tar.bz2
+    PKG_B43_FWV4_SOURCE_URL:=@OPENWRT
+    PKG_B43_FWV4_HASH:=26a8c370f48fc129d0731cfd751c36cae1419b0bc8ca35781126744e60eae009
+  else
+    ifneq ($(CONFIG_B43_FW_4_178),)
+      PKG_B43_FWV4_NAME:=broadcom-wl
+      PKG_B43_FWV4_VERSION:=4.178.10.4
+      PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/linux/wl_apsta.o
+      PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION).tar.bz2
+      PKG_B43_FWV4_SOURCE_URL:=@OPENWRT
+      PKG_B43_FWV4_HASH:=32f6ad98facbb9045646fdc8b54bb03086d204153253f9c65d0234a5d90ae53f
+    else
+      ifneq ($(CONFIG_B43_FW_5_100_138),)
+        PKG_B43_FWV4_NAME:=broadcom-wl
+        PKG_B43_FWV4_VERSION:=5.100.138
+        PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/linux/wl_apsta.o
+        PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION).tar.bz2
+        PKG_B43_FWV4_SOURCE_URL:=http://www.lwfinger.com/b43-firmware/
+        PKG_B43_FWV4_HASH:=f1e7067aac5b62b67b8b6e4c517990277804339ac16065eb13c731ff909ae46f
+      else
+        PKG_B43_FWV4_NAME:=broadcom-wl
+        PKG_B43_FWV4_VERSION:=4.150.10.5
+        PKG_B43_FWV4_OBJECT:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION)/driver/wl_apsta_mimo.o
+        PKG_B43_FWV4_SOURCE:=$(PKG_B43_FWV4_NAME)-$(PKG_B43_FWV4_VERSION).tar.bz2
+        PKG_B43_FWV4_SOURCE_URL:=@OPENWRT
+        PKG_B43_FWV4_HASH:=a9f4e276a4d8d3a1cd0f2eb87080ae89b77f0a7140f06d4e9e2135fc44fdd533
+      endif
+    endif
+  endif
 endif
 ifneq ($(CONFIG_B43_OPENFIRMWARE),)
   PKG_B43_FWV4_NAME:=broadcom-wl
@@ -85,7 +92,6 @@ ifneq ($(CONFIG_B43_OPENFIRMWARE),)
   PKG_B43_FWV4_SOURCE_URL:=http://netweb.ing.unibs.it/~openfwwf/firmware
   PKG_B43_FWV4_HASH:=9de03320083201080b2e94b81637ac07a159cf4e6f3481383e1a217e627bc0dc
 endif
-
 
 define Download/b43
   FILE:=$(PKG_B43_FWV4_SOURCE)
@@ -99,13 +105,13 @@ define KernelPackage/b43
   TITLE:=Broadcom 43xx wireless support
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/b43
   KCONFIG:= \
-  	CONFIG_HW_RANDOM=y
+	CONFIG_HW_RANDOM=y
   # Depend on PCI_SUPPORT to make sure we can select kmod-bcma or kmod-ssb
   DEPENDS += \
 	@PCI_SUPPORT +kmod-mac80211 +kmod-lib-cordic \
 	$(if $(CONFIG_PACKAGE_B43_USE_SSB),+kmod-ssb) \
 	$(if $(CONFIG_PACKAGE_B43_USE_BCMA),+kmod-bcma)
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/b43/b43.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/b43/b43.ko
   AUTOLOAD:=$(call AutoProbe,b43)
   MENU:=1
 endef
@@ -335,7 +341,7 @@ config PACKAGE_B43_USE_BCMA
 endef
 
 define KernelPackage/b43/description
-Kernel module for Broadcom 43xx wireless support (mac80211 stack) new
+ Kernel module for Broadcom 43xx wireless support (mac80211 stack) new
 endef
 
 define KernelPackage/brcmutil
@@ -343,7 +349,7 @@ define KernelPackage/brcmutil
   TITLE:=Broadcom IEEE802.11n common driver parts
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/brcm80211
   DEPENDS+=@PCI_SUPPORT||USB_SUPPORT
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko
   AUTOLOAD:=$(call AutoProbe,brcmutil)
   MENU:=1
 endef
@@ -382,7 +388,7 @@ define KernelPackage/brcmsmac
   TITLE:=Broadcom IEEE802.11n PCIe SoftMAC WLAN driver
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/brcm80211
   DEPENDS+=@!TARGET_bcm47xx_legacy +kmod-mac80211 +!TARGET_bcm47xx:kmod-bcma +kmod-lib-cordic +kmod-lib-crc8 +kmod-brcmutil +!BRCMSMAC_USE_FW_FROM_WL:brcmsmac-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmsmac/brcmsmac.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmsmac/brcmsmac.ko
   AUTOLOAD:=$(call AutoProbe,brcmsmac)
   MENU:=1
 endef
@@ -408,15 +414,14 @@ define KernelPackage/brcmsmac/config
   endif
 endef
 
-
 define KernelPackage/brcmfmac
   $(call KernelPackage/mac80211/Default)
   TITLE:=Broadcom IEEE802.11n USB FullMAC WLAN driver
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/brcm80211
   DEPENDS+= @USB_SUPPORT +kmod-cfg80211 +@DRIVER_11AC_SUPPORT \
-  	+kmod-brcmutil +BRCMFMAC_SDIO:kmod-mmc @!TARGET_uml \
+	+kmod-brcmutil +BRCMFMAC_SDIO:kmod-mmc @!TARGET_uml \
 	+BRCMFMAC_USB:kmod-usb-core +BRCMFMAC_USB:brcmfmac-firmware-usb
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko
   AUTOLOAD:=$(call AutoProbe,brcmfmac)
 endef
 
@@ -459,33 +464,32 @@ define KernelPackage/brcmfmac/config
   endif
 endef
 
-
 define KernelPackage/b43/install
 	rm -rf $(1)/lib/firmware/
-ifeq ($(CONFIG_B43_OPENFIRMWARE),y)
+  ifeq ($(CONFIG_B43_OPENFIRMWARE),y)
 	tar xzf "$(DL_DIR)/$(PKG_B43_FWV4_SOURCE)" -C "$(PKG_BUILD_DIR)"
-else
+  else
 	tar xjf "$(DL_DIR)/$(PKG_B43_FWV4_SOURCE)" -C "$(PKG_BUILD_DIR)"
-endif
+  endif
 	$(INSTALL_DIR) $(1)/lib/firmware/
-ifeq ($(CONFIG_B43_OPENFIRMWARE),y)
+  ifeq ($(CONFIG_B43_OPENFIRMWARE),y)
 	$(MAKE) -C "$(PKG_BUILD_DIR)/$(PKG_B43_FWV4_OBJECT)/"
 	$(INSTALL_DIR) $(1)/lib/firmware/b43-open/
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/$(PKG_B43_FWV4_OBJECT)/ucode5.fw $(1)/lib/firmware/b43-open/ucode5.fw
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/$(PKG_B43_FWV4_OBJECT)/b0g0bsinitvals5.fw $(1)/lib/firmware/b43-open/b0g0bsinitvals5.fw
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/$(PKG_B43_FWV4_OBJECT)/b0g0initvals5.fw $(1)/lib/firmware/b43-open/b0g0initvals5.fw
-else
+  else
 	b43-fwcutter -w $(1)/lib/firmware/ $(PKG_BUILD_DIR)/$(PKG_B43_FWV4_OBJECT)
-endif
-ifneq ($(CONFIG_B43_FW_SQUASH),)
+  endif
+  ifneq ($(CONFIG_B43_FW_SQUASH),)
 	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)" "$(1)/lib/firmware/b43"
-endif
+  endif
 endef
 
 define KernelPackage/brcmsmac/install
 	$(INSTALL_DIR) $(1)/lib/firmware/brcm
-ifeq ($(CONFIG_BRCMSMAC_USE_FW_FROM_WL),y)
+  ifeq ($(CONFIG_BRCMSMAC_USE_FW_FROM_WL),y)
 	tar xjf "$(DL_DIR)/$(PKG_BRCMSMAC_FW_SOURCE)" -C "$(PKG_BUILD_DIR)"
 	b43-fwcutter --brcmsmac -w $(1)/lib/firmware/ $(PKG_BUILD_DIR)/$(PKG_BRCMSMAC_FW_OBJECT)
-endif
+  endif
 endef

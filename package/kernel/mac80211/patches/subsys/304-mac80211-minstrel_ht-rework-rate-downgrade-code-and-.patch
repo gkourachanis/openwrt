@@ -94,7 +94,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 -	minstrel_ht_prob_rate_reduce_streams(mi);
  	minstrel_ht_refill_sample_rates(mi);
  
- #ifdef CPTCFG_MAC80211_DEBUGFS
+ #ifdef CONFIG_MAC80211_DEBUGFS
 @@ -1256,7 +1223,7 @@ minstrel_ht_ri_txstat_valid(struct minst
  }
  

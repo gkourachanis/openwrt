@@ -76,7 +76,7 @@ Signed-off-by: Johannes Berg <johannes.berg@intel.com>
  	.remove_interface	= carl9170_op_remove_interface,
 --- a/drivers/net/wireless/ath/wcn36xx/main.c
 +++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -1362,6 +1362,7 @@ static const struct ieee80211_ops wcn36x
+@@ -1361,6 +1361,7 @@ static const struct ieee80211_ops wcn36x
  	.prepare_multicast	= wcn36xx_prepare_multicast,
  	.configure_filter       = wcn36xx_configure_filter,
  	.tx			= wcn36xx_tx,
@@ -86,7 +86,7 @@ Signed-off-by: Johannes Berg <johannes.berg@intel.com>
  	.cancel_hw_scan		= wcn36xx_cancel_hw_scan,
 --- a/drivers/net/wireless/atmel/at76c50x-usb.c
 +++ b/drivers/net/wireless/atmel/at76c50x-usb.c
-@@ -2187,6 +2187,7 @@ static int at76_set_key(struct ieee80211
+@@ -2179,6 +2179,7 @@ static int at76_set_key(struct ieee80211
  
  static const struct ieee80211_ops at76_ops = {
  	.tx = at76_mac80211_tx,

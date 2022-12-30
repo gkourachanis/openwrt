@@ -1,7 +1,7 @@
 --- a/drivers/net/wireless/ath/ath9k/ath9k.h
 +++ b/drivers/net/wireless/ath/ath9k/ath9k.h
 @@ -843,6 +843,9 @@ static inline int ath9k_dump_btcoex(stru
- #ifdef CPTCFG_MAC80211_LEDS
+ #ifdef CONFIG_MAC80211_LEDS
  void ath_init_leds(struct ath_softc *sc);
  void ath_deinit_leds(struct ath_softc *sc);
 +int ath_create_gpio_led(struct ath_softc *sc, int gpio, const char *name,
@@ -27,7 +27,7 @@
 @@ -1032,9 +1042,8 @@ struct ath_softc {
  	spinlock_t chan_lock;
  
- #ifdef CPTCFG_MAC80211_LEDS
+ #ifdef CONFIG_MAC80211_LEDS
 -	bool led_registered;
 -	char led_name[32];
 -	struct led_classdev led_cdev;
@@ -35,7 +35,7 @@
 +	struct list_head leds;
  #endif
  
- #ifdef CPTCFG_ATH9K_DEBUGFS
+ #ifdef CONFIG_ATH9K_DEBUGFS
 --- a/drivers/net/wireless/ath/ath9k/gpio.c
 +++ b/drivers/net/wireless/ath/ath9k/gpio.c
 @@ -39,61 +39,111 @@ static void ath_fill_led_pin(struct ath_
@@ -183,7 +183,7 @@
 +++ b/drivers/net/wireless/ath/ath9k/init.c
 @@ -1088,7 +1088,7 @@ int ath9k_init_device(u16 devid, struct
  
- #ifdef CPTCFG_MAC80211_LEDS
+ #ifdef CONFIG_MAC80211_LEDS
  	/* must be initialized before ieee80211_register_hw */
 -	sc->led_cdev.default_trigger = ieee80211_create_tpt_led_trigger(sc->hw,
 +	sc->led_default_trigger = ieee80211_create_tpt_led_trigger(sc->hw,

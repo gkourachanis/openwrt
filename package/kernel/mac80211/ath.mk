@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2022 OpenWrt.org
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+
 PKG_DRIVERS += \
 	ath ath5k ath6kl ath6kl-sdio ath6kl-usb ath9k ath9k-common ath9k-htc ath10k ath10k-smallbuffers \
 	ath11k ath11k-pci carl9170 owl-loader ar5523 wil6210
@@ -37,7 +44,7 @@ ifdef CONFIG_PACKAGE_MAC80211_TRACING
 	WIL6210_TRACING
 endif
 
-config-$(call config_package,ath) += ATH_CARDS ATH_COMMON
+config-$(call config_package,ath) += ATH_COMMON
 config-$(CONFIG_PACKAGE_ATH_DEBUG) += ATH_DEBUG ATH10K_DEBUG ATH11K_DEBUG ATH9K_STATION_STATISTICS
 config-$(CONFIG_PACKAGE_ATH_DFS) += ATH9K_DFS_CERTIFIED ATH10K_DFS_CERTIFIED
 config-$(CONFIG_PACKAGE_ATH_SPECTRAL) += ATH9K_COMMON_SPECTRAL ATH10K_SPECTRAL ATH11K_SPECTRAL
@@ -79,8 +86,10 @@ config-$(call config_package,ar5523) += AR5523
 
 config-$(call config_package,wil6210) += WIL6210
 
+
 define KernelPackage/ath/config
   if PACKAGE_kmod-ath
+
 	config ATH_USER_REGD
 		bool "Force Atheros drivers to respect the user's regdomain settings"
 		default y
@@ -121,7 +130,7 @@ define KernelPackage/ath/config
 		help
 		  Enables support for Dynamic ACK estimation, which allows the fastest possible speed
 		  at any distance automatically by increasing/decreasing the max frame ACK time for
-		  the most remote station detected.  It can be enabled by using iw (iw phy0 set distance auto),
+		  the most remote station detected. It can be enabled by using iw (iw phy0 set distance auto),
 		  or by sending the NL80211_ATTR_WIPHY_DYN_ACK flag to mac80211 driver using netlink.
 
 		  Select this option if you want to enable this feature
@@ -133,7 +142,7 @@ define KernelPackage/ath
   $(call KernelPackage/mac80211/Default)
   TITLE:=Atheros common driver part
   DEPENDS+= @PCI_SUPPORT||USB_SUPPORT||TARGET_ath79||TARGET_ath25 +kmod-mac80211
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ath.ko
   MENU:=1
 endef
 
@@ -146,7 +155,7 @@ define KernelPackage/ath5k
   TITLE:=Atheros 5xxx wireless cards support
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath5k
   DEPENDS+= @(PCI_SUPPORT||TARGET_ath25) +kmod-ath
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath5k/ath5k.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ath5k/ath5k.ko
   AUTOLOAD:=$(call AutoProbe,ath5k)
 endef
 
@@ -161,7 +170,7 @@ define KernelPackage/ath6kl
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath6kl
   HIDDEN:=1
   DEPENDS+= +kmod-ath
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_core.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_core.ko
 endef
 
 define KernelPackage/ath6kl-sdio
@@ -169,13 +178,13 @@ define KernelPackage/ath6kl-sdio
   TITLE:=Atheros 802.11n SDIO wireless cards support
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath6kl
   DEPENDS+= +kmod-mmc +kmod-ath6kl
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_sdio.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_sdio.ko
   AUTOLOAD:=$(call AutoProbe,ath6kl_sdio)
 endef
 
 define KernelPackage/ath6kl-sdio/description
-This module adds support for wireless adapters based on
-Atheros IEEE 802.11n AR6003 and AR6004 family of chipsets.
+ This module adds support for wireless adapters based on
+ Atheros IEEE 802.11n AR6003 and AR6004 family of chipsets.
 endef
 
 define KernelPackage/ath6kl-usb
@@ -183,13 +192,13 @@ define KernelPackage/ath6kl-usb
   TITLE:=Atheros 802.11n USB wireless cards support
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath6kl
   DEPENDS+= @USB_SUPPORT +kmod-usb-core +kmod-ath6kl
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_usb.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ath/ath6kl/ath6kl_usb.ko
   AUTOLOAD:=$(call AutoProbe,ath6kl_usb)
 endef
 
 define KernelPackage/ath6kl-usb/description
-This module adds support for wireless adapters based on the
-Atheros IEEE 802.11n AR6004 chipset.
+ This module adds support for wireless adapters based on the
+ Atheros IEEE 802.11n AR6004 chipset.
 endef
 
 define KernelPackage/ath9k-common
@@ -199,8 +208,8 @@ define KernelPackage/ath9k-common
   HIDDEN:=1
   DEPENDS+= @PCI_SUPPORT||USB_SUPPORT||TARGET_ath79 +kmod-ath +kmod-random-core
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_common.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_hw.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_common.ko \
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_hw.ko
 endef
 
 define KernelPackage/ath9k
@@ -209,13 +218,13 @@ define KernelPackage/ath9k
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath9k
   DEPENDS+= @PCI_SUPPORT||TARGET_ath79 +kmod-ath9k-common
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k.ko
   AUTOLOAD:=$(call AutoProbe,ath9k)
 endef
 
 define KernelPackage/ath9k/description
-This module adds support for wireless adapters based on
-Atheros IEEE 802.11n AR5008 and AR9001 family of chipsets.
+ This module adds support for wireless adapters based on
+ Atheros IEEE 802.11n AR5008 and AR9001 family of chipsets.
 endef
 
 define KernelPackage/ath9k/config
@@ -231,9 +240,9 @@ define KernelPackage/ath9k/config
 		depends on PACKAGE_kmod-ath9k
 		default y if (x86_64 || i386)
 
-       config ATH9K_TX99
-               bool "Enable TX99 support (WARNING: testing only, breaks normal operation!)"
-               depends on PACKAGE_kmod-ath9k
+	config ATH9K_TX99
+		bool "Enable TX99 support (WARNING: testing only, breaks normal operation!)"
+		depends on PACKAGE_kmod-ath9k
 
 	config ATH9K_UBNTHSR
 		bool "Support for Ubiquiti UniFi Outdoor+ access point"
@@ -248,13 +257,13 @@ define KernelPackage/ath9k-htc
   URL:=https://wireless.wiki.kernel.org/en/users/drivers/ath9k
   DEPENDS+= @USB_SUPPORT +kmod-ath9k-common +kmod-usb-core +ath9k-htc-firmware
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_htc.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_htc.ko
   AUTOLOAD:=$(call AutoProbe,ath9k_htc)
 endef
 
 define KernelPackage/ath9k-htc/description
-This module adds support for wireless adapters based on
-Atheros USB AR9271 and AR7010 family of chipsets.
+ This module adds support for wireless adapters based on
+ Atheros USB AR9271 and AR7010 family of chipsets.
 endef
 
 define KernelPackage/ath10k
@@ -264,29 +273,29 @@ define KernelPackage/ath10k
   DEPENDS+= @PCI_SUPPORT +kmod-ath +@DRIVER_11AC_SUPPORT \
 	+ATH10K_THERMAL:kmod-hwmon-core +ATH10K_THERMAL:kmod-thermal
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath10k/ath10k_core.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath10k/ath10k_pci.ko
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath10k/ath10k_core.ko \
+	$(LINUX_DIR)/drivers/net/wireless/ath/ath10k/ath10k_pci.ko
   AUTOLOAD:=$(call AutoProbe,ath10k_core ath10k_pci)
   MODPARAMS.ath10k_core:=frame_mode=2
   VARIANT:=regular
 endef
 
 define KernelPackage/ath10k/description
-This module adds support for wireless adapters based on
-Atheros IEEE 802.11ac family of chipsets. For now only
-PCI is supported.
+ This module adds support for wireless adapters based on
+ Atheros IEEE 802.11ac family of chipsets. For now only
+ PCI is supported.
 endef
 
 define KernelPackage/ath10k/config
 
-       config ATH10K_LEDS
-               bool "Enable LED support"
-               default y
-               depends on PACKAGE_kmod-ath10k || PACKAGE_kmod-ath10k-smallbuffers
+	config ATH10K_LEDS
+		bool "Enable LED support"
+		default y
+		depends on PACKAGE_kmod-ath10k || PACKAGE_kmod-ath10k-smallbuffers
 
-       config ATH10K_THERMAL
-               bool "Enable thermal sensors and throttling support"
-               depends on PACKAGE_kmod-ath10k || PACKAGE_kmod-ath10k-smallbuffers
+	config ATH10K_THERMAL
+		bool "Enable thermal sensors and throttling support"
+		depends on PACKAGE_kmod-ath10k || PACKAGE_kmod-ath10k-smallbuffers
 
 endef
 
@@ -313,9 +322,9 @@ endef
 
 define KernelPackage/ath11k/config
 
-       config ATH11K_THERMAL
-               bool "Enable thermal sensors and throttling support"
-               depends on PACKAGE_kmod-ath11k
+	config ATH11K_THERMAL
+		bool "Enable thermal sensors and throttling support"
+		depends on PACKAGE_kmod-ath11k
 
 endef
 
@@ -337,7 +346,7 @@ define KernelPackage/carl9170
   $(call KernelPackage/mac80211/Default)
   TITLE:=Driver for Atheros AR9170 USB sticks
   DEPENDS:=@USB_SUPPORT +kmod-mac80211 +kmod-ath +kmod-usb-core +kmod-input-core +carl9170-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/carl9170/carl9170.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/carl9170/carl9170.ko
   AUTOLOAD:=$(call AutoProbe,carl9170)
 endef
 
@@ -345,24 +354,24 @@ define KernelPackage/owl-loader
   $(call KernelPackage/mac80211/Default)
   TITLE:=Owl loader for initializing Atheros PCI(e) Wifi chips
   DEPENDS:=@PCI_SUPPORT +kmod-ath9k
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ath9k/ath9k_pci_owl_loader.ko
   AUTOLOAD:=$(call AutoProbe,ath9k_pci_owl_loader)
 endef
 
 define KernelPackage/owl-loader/description
-  Kernel module that helps to initialize certain Qualcomm
-  Atheros' PCI(e) Wifi chips, which have the init data
-  (which contains the PCI device ID for example) stored
-  together with the calibration data in the file system.
+ Kernel module that helps to initialize certain Qualcomm
+ Atheros' PCI(e) Wifi chips, which have the init data
+ (which contains the PCI device ID for example) stored
+ together with the calibration data in the file system.
 
-  This is necessary for devices like the Cisco Meraki Z1.
+ This is necessary for devices like the Cisco Meraki Z1.
 endef
 
 define KernelPackage/ar5523
   $(call KernelPackage/mac80211/Default)
   TITLE:=Driver for Atheros AR5523 USB sticks
   DEPENDS:=@USB_SUPPORT +kmod-mac80211 +kmod-ath +kmod-usb-core +kmod-input-core 
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/ar5523/ar5523.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/ar5523/ar5523.ko
   AUTOLOAD:=$(call AutoProbe,ar5523)
 endef
 
@@ -370,6 +379,6 @@ define KernelPackage/wil6210
   $(call KernelPackage/mac80211/Default)
   TITLE:=QCA/Wilocity 60g WiFi card wil6210 support
   DEPENDS+= @PCI_SUPPORT +kmod-mac80211 +wil6210-firmware
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ath/wil6210/wil6210.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ath/wil6210/wil6210.ko
   AUTOLOAD:=$(call AutoProbe,wil6210)
 endef

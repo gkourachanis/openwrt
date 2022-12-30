@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2022 OpenWrt.org
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+
 PKG_DRIVERS += iwlwifi
 
 config-$(call config_package,iwlwifi) += IWLWIFI IWLDVM IWLMVM
@@ -9,9 +16,9 @@ define KernelPackage/iwlwifi
   DEPENDS:= +kmod-mac80211 @PCI_SUPPORT +@DRIVER_11AC_SUPPORT +@DRIVER_11AX_SUPPORT
   TITLE:=Intel AGN Wireless support
   FILES:= \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/intel/iwlwifi/dvm/iwldvm.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/intel/iwlwifi/mvm/iwlmvm.ko
+	$(LINUX_DIR)/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko \
+	$(LINUX_DIR)/drivers/net/wireless/intel/iwlwifi/dvm/iwldvm.ko \
+	$(LINUX_DIR)/drivers/net/wireless/intel/iwlwifi/mvm/iwlmvm.ko
   AUTOLOAD:=$(call AutoProbe,iwlwifi iwldvm iwlmvm)
   MENU:=1
 endef
@@ -64,7 +71,7 @@ define KernelPackage/iwlwifi/config
 		  any problems you may encounter.
 
 	config PACKAGE_IWLWIFI_DEBUGFS
-	        bool "iwlwifi debugfs support"
+		bool "iwlwifi debugfs support"
 		depends on PACKAGE_MAC80211_DEBUGFS
 		default n
 		help
@@ -74,4 +81,3 @@ define KernelPackage/iwlwifi/config
 
   endif
 endef
-

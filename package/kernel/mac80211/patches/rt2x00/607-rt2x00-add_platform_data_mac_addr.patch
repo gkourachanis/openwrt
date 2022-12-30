@@ -13,13 +13,3 @@
  	of_get_mac_address(rt2x00dev->dev->of_node, eeprom_mac_addr);
  
  	if (!is_valid_ether_addr(eeprom_mac_addr)) {
---- a/include/linux/rt2x00_platform.h
-+++ b/include/linux/rt2x00_platform.h
-@@ -14,6 +14,7 @@
- 
- struct rt2x00_platform_data {
- 	char *eeprom_file_name;
-+	const u8 *mac_address;
- 
- 	int disable_2ghz;
- 	int disable_5ghz;

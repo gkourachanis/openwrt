@@ -5,6 +5,6 @@
  config ATH_COMMON
 -	tristate
 +	tristate "ath.ko"
- 	depends on m
  
  config WLAN_VENDOR_ATH
+ 	bool "Atheros/Qualcomm devices"

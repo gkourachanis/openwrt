@@ -20,7 +20,7 @@ Signed-off-by: Mathias Kresin <dev@kresin.me>
  	s32 tx_power_2g_limit;
  	s32 tx_power_5g_limit;
  
-+#ifdef CPTCFG_MAC80211_LEDS
++#ifdef CONFIG_MAC80211_LEDS
 +	const char *led_default_trigger;
 +#endif
 +
@@ -45,7 +45,7 @@ Signed-off-by: Mathias Kresin <dev@kresin.me>
 @@ -10284,7 +10284,7 @@ int ath10k_mac_register(struct ath10k *a
  	ar->hw->weight_multiplier = ATH10K_AIRTIME_WEIGHT_MULTIPLIER;
  
- #ifdef CPTCFG_MAC80211_LEDS
+ #ifdef CONFIG_MAC80211_LEDS
 -	ieee80211_create_tpt_led_trigger(ar->hw,
 +	ar->led_default_trigger = ieee80211_create_tpt_led_trigger(ar->hw,
  		IEEE80211_TPT_LEDTRIG_FL_RADIO, ath10k_tpt_blink,

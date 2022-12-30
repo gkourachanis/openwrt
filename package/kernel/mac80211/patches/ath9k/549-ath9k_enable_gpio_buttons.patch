@@ -27,7 +27,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +#include <linux/platform_device.h>
 +#include <linux/gpio_keys.h>
  
- #ifdef CPTCFG_MAC80211_LEDS
+ #ifdef CONFIG_MAC80211_LEDS
  
 @@ -133,6 +135,67 @@ static void ath9k_unregister_gpio_chip(s
  	sc->gpiochip = NULL;
@@ -128,16 +128,3 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  	if (pdata && pdata->leds && pdata->num_leds)
  		for (i = 0; i < pdata->num_leds; i++) {
---- a/include/linux/ath9k_platform.h
-+++ b/include/linux/ath9k_platform.h
-@@ -49,6 +49,10 @@ struct ath9k_platform_data {
- 
- 	int num_leds;
- 	const struct gpio_led *leds;
-+
-+	unsigned num_btns;
-+	const struct gpio_keys_button *btns;
-+	unsigned btn_poll_interval;
- };
- 
- #endif /* _LINUX_ATH9K_PLATFORM_H */

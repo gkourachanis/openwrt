@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2022 OpenWrt.org
+#
+# This is free software, licensed under the GNU General Public License v2.
+# See /LICENSE for more information.
+#
+
 PKG_DRIVERS += \
 	rt2x00-lib rt2x00-pci rt2x00-usb rt2x00-mmio \
 	rt2800-lib rt2800-mmio rt2800-pci rt2800-soc rt2800-usb
@@ -34,10 +41,10 @@ define KernelPackage/rt2x00/Default
 endef
 
 define KernelPackage/rt2x00-lib
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS+= @(PCI_SUPPORT||USB_SUPPORT||TARGET_ramips) +kmod-mac80211
   TITLE+= (LIB)
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00lib.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00lib.ko
   MENU:=1
 endef
 
@@ -61,71 +68,69 @@ define KernelPackage/rt2x00-lib/config
 endef
 
 define KernelPackage/rt2x00-mmio
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS+= @(PCI_SUPPORT||TARGET_ramips) +kmod-rt2x00-lib
   HIDDEN:=1
   TITLE+= (MMIO)
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00mmio.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00mmio.ko
 endef
 
 define KernelPackage/rt2x00-pci
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS+= @PCI_SUPPORT +kmod-rt2x00-mmio +kmod-rt2x00-lib
   HIDDEN:=1
   TITLE+= (PCI)
-  FILES:= $(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00pci.ko
+  FILES:= $(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00pci.ko
   AUTOLOAD:=$(call AutoProbe,rt2x00pci)
 endef
 
 define KernelPackage/rt2x00-usb
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS+= @USB_SUPPORT +kmod-rt2x00-lib +kmod-usb-core
   HIDDEN:=1
   TITLE+= (USB)
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00usb.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00usb.ko
   AUTOLOAD:=$(call AutoProbe,rt2x00usb)
 endef
 
 define KernelPackage/rt2800-lib
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS+= @(PCI_SUPPORT||USB_SUPPORT||TARGET_ramips) +kmod-rt2x00-lib +kmod-lib-crc-ccitt
   HIDDEN:=1
   TITLE+= (rt2800 LIB)
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800lib.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800lib.ko
 endef
 
 define KernelPackage/rt2800-mmio
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   TITLE += (RT28xx/RT3xxx MMIO)
   DEPENDS += +kmod-rt2800-lib +kmod-rt2x00-mmio
   HIDDEN:=1
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800mmio.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800mmio.ko
 endef
 
 define KernelPackage/rt2800-soc
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS += @(TARGET_ramips_rt288x||TARGET_ramips_rt305x||TARGET_ramips_rt3883||TARGET_ramips_mt7620) +kmod-rt2800-mmio +kmod-rt2800-lib
   TITLE += (RT28xx/RT3xxx SoC)
   FILES := \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00soc.ko \
-	$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800soc.ko
+	$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2x00soc.ko \
+	$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800soc.ko
   AUTOLOAD:=$(call AutoProbe,rt2800soc)
 endef
 
 define KernelPackage/rt2800-pci
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS+= @PCI_SUPPORT +kmod-rt2x00-pci +kmod-rt2800-lib +kmod-rt2800-mmio +kmod-eeprom-93cx6 +rt2800-pci-firmware
   TITLE+= (RT2860 PCI)
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800pci.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800pci.ko
   AUTOLOAD:=$(call AutoProbe,rt2800pci)
 endef
 
 define KernelPackage/rt2800-usb
-$(call KernelPackage/rt2x00/Default)
+  $(call KernelPackage/rt2x00/Default)
   DEPENDS+= @USB_SUPPORT +kmod-rt2x00-usb +kmod-rt2800-lib +kmod-lib-crc-ccitt +rt2800-usb-firmware
   TITLE+= (RT2870 USB)
-  FILES:=$(PKG_BUILD_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800usb.ko
+  FILES:=$(LINUX_DIR)/drivers/net/wireless/ralink/rt2x00/rt2800usb.ko
   AUTOLOAD:=$(call AutoProbe,rt2800usb)
 endef
-
-

@@ -1,24 +1,14 @@
---- a/local-symbols
-+++ b/local-symbols
-@@ -354,6 +354,7 @@ RT2X00_LIB_FIRMWARE=
- RT2X00_LIB_CRYPTO=
- RT2X00_LIB_LEDS=
- RT2X00_LIB_DEBUGFS=
-+RT2X00_LIB_EEPROM=
- RT2X00_DEBUG=
- WLAN_VENDOR_REALTEK=
- RTL8180=
 --- a/drivers/net/wireless/ralink/rt2x00/Kconfig
 +++ b/drivers/net/wireless/ralink/rt2x00/Kconfig
-@@ -70,6 +70,7 @@ config RT2800PCI
+@@ -65,6 +65,7 @@
  	select RT2X00_LIB_MMIO
  	select RT2X00_LIB_PCI
  	select RT2X00_LIB_FIRMWARE
 +	select RT2X00_LIB_EEPROM
  	select RT2X00_LIB_CRYPTO
- 	depends on CRC_CCITT
- 	depends on EEPROM_93CX6
-@@ -216,6 +217,7 @@ config RT2800SOC
+ 	select CRC_CCITT
+ 	select EEPROM_93CX6
+@@ -207,6 +208,7 @@
  	select RT2X00_LIB_MMIO
  	select RT2X00_LIB_CRYPTO
  	select RT2X00_LIB_FIRMWARE
@@ -26,26 +16,26 @@
  	select RT2800_LIB
  	select RT2800_LIB_MMIO
  	help
-@@ -266,6 +268,9 @@ config RT2X00_LIB_FIRMWARE
+@@ -249,6 +251,9 @@
+ 
  config RT2X00_LIB_CRYPTO
  	bool
- 
++ 
 +config RT2X00_LIB_EEPROM
 +	bool
-+
+ 
  config RT2X00_LIB_LEDS
  	bool
- 	default y if (RT2X00_LIB=y && LEDS_CLASS=y) || (RT2X00_LIB=m && LEDS_CLASS!=n)
 --- a/drivers/net/wireless/ralink/rt2x00/Makefile
 +++ b/drivers/net/wireless/ralink/rt2x00/Makefile
-@@ -8,6 +8,7 @@ rt2x00lib-$(CPTCFG_RT2X00_LIB_DEBUGFS)	+
- rt2x00lib-$(CPTCFG_RT2X00_LIB_CRYPTO)	+= rt2x00crypto.o
- rt2x00lib-$(CPTCFG_RT2X00_LIB_FIRMWARE)	+= rt2x00firmware.o
- rt2x00lib-$(CPTCFG_RT2X00_LIB_LEDS)	+= rt2x00leds.o
-+rt2x00lib-$(CPTCFG_RT2X00_LIB_EEPROM)	+= rt2x00eeprom.o
+@@ -8,6 +8,7 @@ rt2x00lib-$(CONFIG_RT2X00_LIB_DEBUGFS)	+
+ rt2x00lib-$(CONFIG_RT2X00_LIB_CRYPTO)	+= rt2x00crypto.o
+ rt2x00lib-$(CONFIG_RT2X00_LIB_FIRMWARE)	+= rt2x00firmware.o
+ rt2x00lib-$(CONFIG_RT2X00_LIB_LEDS)	+= rt2x00leds.o
++rt2x00lib-$(CONFIG_RT2X00_LIB_EEPROM)	+= rt2x00eeprom.o
  
- obj-$(CPTCFG_RT2X00_LIB)		+= rt2x00lib.o
- obj-$(CPTCFG_RT2X00_LIB_MMIO)		+= rt2x00mmio.o
+ obj-$(CONFIG_RT2X00_LIB)		+= rt2x00lib.o
+ obj-$(CONFIG_RT2X00_LIB_MMIO)		+= rt2x00mmio.o
 --- a/drivers/net/wireless/ralink/rt2x00/rt2800lib.h
 +++ b/drivers/net/wireless/ralink/rt2x00/rt2800lib.h
 @@ -47,6 +47,8 @@ struct rt2800_drv_data {
@@ -262,12 +252,12 @@
 --- a/drivers/net/wireless/ralink/rt2x00/rt2x00lib.h
 +++ b/drivers/net/wireless/ralink/rt2x00/rt2x00lib.h
 @@ -286,6 +286,22 @@ static inline void rt2x00lib_free_firmwa
- #endif /* CPTCFG_RT2X00_LIB_FIRMWARE */
+ #endif /* CONFIG_RT2X00_LIB_FIRMWARE */
  
  /*
 + * EEPROM file handlers.
 + */
-+#ifdef CPTCFG_RT2X00_LIB_EEPROM
++#ifdef CONFIG_RT2X00_LIB_EEPROM
 +int rt2x00lib_load_eeprom_file(struct rt2x00_dev *rt2x00dev);
 +void rt2x00lib_free_eeprom_file(struct rt2x00_dev *rt2x00dev);
 +#else
@@ -278,12 +268,12 @@
 +static inline void rt2x00lib_free_eeprom_file(struct rt2x00_dev *rt2x00dev)
 +{
 +}
-+#endif /* CPTCFG_RT2X00_LIB_EEPROM */
++#endif /* CONFIG_RT2X00_LIB_EEPROM */
 +
 +/*
   * Debugfs handlers.
   */
- #ifdef CPTCFG_RT2X00_LIB_DEBUGFS
+ #ifdef CONFIG_RT2X00_LIB_DEBUGFS
 --- a/drivers/net/wireless/ralink/rt2x00/rt2x00soc.c
 +++ b/drivers/net/wireless/ralink/rt2x00/rt2x00soc.c
 @@ -86,6 +86,7 @@ int rt2x00soc_probe(struct platform_devi

@@ -34,7 +34,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	struct ieee80211_hw *hw;
  	struct device *dev;
 @@ -1044,6 +1053,9 @@ struct ath_softc {
- #ifdef CPTCFG_MAC80211_LEDS
+ #ifdef CONFIG_MAC80211_LEDS
  	const char *led_default_trigger;
  	struct list_head leds;
 +#ifdef CONFIG_GPIOLIB
@@ -42,7 +42,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +#endif
  #endif
  
- #ifdef CPTCFG_ATH9K_DEBUGFS
+ #ifdef CONFIG_ATH9K_DEBUGFS
 --- a/drivers/net/wireless/ath/ath9k/gpio.c
 +++ b/drivers/net/wireless/ath/ath9k/gpio.c
 @@ -16,13 +16,139 @@
@@ -51,7 +51,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #include <linux/ath9k_platform.h>
 +#include <linux/gpio.h>
 +
-+#ifdef CPTCFG_MAC80211_LEDS
++#ifdef CONFIG_MAC80211_LEDS
 +
 +#ifdef CONFIG_GPIOLIB
 +
@@ -127,11 +127,11 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +	snprintf(gc->label, sizeof(gc->label), "ath9k-%s",
 +		 wiphy_name(sc->hw->wiphy));
 +#ifdef CONFIG_OF
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
++// #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
 +	gc->gchip.parent = sc->dev;
-+#else
-+	gc->gchip.dev = sc->dev;
-+#endif
++// #else
++// 	gc->gchip.dev = sc->dev;
++// #endif
 +#endif
 +	gc->gchip.label = gc->label;
 +	gc->gchip.base = -1;	/* determine base automatically */
@@ -182,7 +182,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  /*	 LED functions		*/
  /********************************/
  
--#ifdef CPTCFG_MAC80211_LEDS
+-#ifdef CONFIG_MAC80211_LEDS
 -
  static void ath_fill_led_pin(struct ath_softc *sc)
  {

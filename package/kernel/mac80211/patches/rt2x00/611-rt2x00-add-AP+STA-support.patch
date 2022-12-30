@@ -6,6 +6,6 @@
  	if_limit->max = rt2x00dev->ops->max_ap_intf;
 -	if_limit->types = BIT(NL80211_IFTYPE_AP);
 +	if_limit->types = BIT(NL80211_IFTYPE_AP) | BIT(NL80211_IFTYPE_STATION);
- #ifdef CPTCFG_MAC80211_MESH
+ #ifdef CONFIG_MAC80211_MESH
  	if_limit->types |= BIT(NL80211_IFTYPE_MESH_POINT);
  #endif
