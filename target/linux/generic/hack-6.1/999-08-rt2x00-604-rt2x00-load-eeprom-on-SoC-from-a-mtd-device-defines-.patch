@@ -12,7 +12,7 @@ Signed-off-by: John Crispin <blogic@openwrt.org>
 
 --- a/drivers/net/wireless/ralink/rt2x00/Kconfig
 +++ b/drivers/net/wireless/ralink/rt2x00/Kconfig
-@@ -211,6 +211,7 @@
+@@ -211,6 +211,7 @@ config RT2800SOC
  	select RT2X00_LIB_EEPROM
  	select RT2800_LIB
  	select RT2800_LIB_MMIO

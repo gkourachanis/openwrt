@@ -33,11 +33,9 @@ Link: https://lore.kernel.org/linux-mtd/20221004083710.27704-2-zajec5@gmail.com
  drivers/mtd/mtdcore.c | 17 +++++------------
  1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 6ad62ff7be23d0..20fcedc3021e3a 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -551,13 +551,11 @@ static void mtd_check_of_node(struct mtd_info *mtd)
+@@ -551,13 +551,11 @@ static void mtd_check_of_node(struct mtd
  	struct device_node *partitions, *parent_dn, *mtd_dn = NULL;
  	const char *pname, *prefix = "partition-";
  	int plen, mtd_name_len, offset, prefix_len;
@@ -51,7 +49,7 @@ index 6ad62ff7be23d0..20fcedc3021e3a 100644
  	if (!mtd_is_partition(mtd))
  		return;
  
-@@ -565,7 +563,10 @@ static void mtd_check_of_node(struct mtd_info *mtd)
+@@ -565,7 +563,10 @@ static void mtd_check_of_node(struct mtd
  	if (!parent_dn)
  		return;
  
@@ -63,7 +61,7 @@ index 6ad62ff7be23d0..20fcedc3021e3a 100644
  	if (!partitions)
  		goto exit_parent;
  
-@@ -589,19 +590,11 @@ static void mtd_check_of_node(struct mtd_info *mtd)
+@@ -589,19 +590,11 @@ static void mtd_check_of_node(struct mtd
  		plen = strlen(pname) - offset;
  		if (plen == mtd_name_len &&
  		    !strncmp(mtd->name, pname + offset, plen)) {
@@ -84,6 +82,3 @@ index 6ad62ff7be23d0..20fcedc3021e3a 100644
  	of_node_put(partitions);
  exit_parent:
  	of_node_put(parent_dn);
--- 
-2.38.1
-

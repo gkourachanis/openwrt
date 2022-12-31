@@ -17,8 +17,6 @@ Link: https://lore.kernel.org/linux-mtd/20221022211318.32009-2-zajec5@gmail.com
  drivers/mtd/mtdcore.c | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 756fd27f4cfeef..e0193054f8d9fb 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
 @@ -28,6 +28,7 @@
@@ -47,6 +45,3 @@ index 756fd27f4cfeef..e0193054f8d9fb 100644
  	/* We _know_ we aren't being removed, because
  	   our caller is still holding us here. So none
  	   of this try_ nonsense, and no bitching about it
--- 
-2.38.1
-

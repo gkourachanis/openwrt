@@ -23,8 +23,6 @@ Link: https://lore.kernel.org/linux-mtd/20221116124932.4748-1-lukas.bulwahn@gmai
  drivers/mtd/parsers/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index 00dfdc934ac89b..b20e0c38b517d0 100644
 --- a/drivers/mtd/parsers/Kconfig
 +++ b/drivers/mtd/parsers/Kconfig
 @@ -22,7 +22,7 @@ config MTD_BCM63XX_PARTS
@@ -36,6 +34,3 @@ index 00dfdc934ac89b..b20e0c38b517d0 100644
  	help
  	  Broadcom uses a custom way of storing U-Boot environment variables.
  	  They are placed inside U-Boot partition itself at unspecified offset.
--- 
-2.38.1
-

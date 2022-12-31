@@ -104,7 +104,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	depends on PERF_EVENTS || TRACING || CFI_CLANG
 --- a/kernel/module/main.c
 +++ b/kernel/module/main.c
-@@ -988,6 +988,7 @@ struct module_attribute *modinfo_
+@@ -988,6 +988,7 @@ size_t modinfo_attrs_count = ARRAY_SIZE(
  
  static const char vermagic[] = VERMAGIC_STRING;
  
@@ -112,7 +112,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  int try_to_force_load(struct module *mod, const char *reason)
  {
  #ifdef CONFIG_MODULE_FORCE_LOAD
-@@ -999,6 +1000,7 @@ int try_to_force_load(struct modu
+@@ -999,6 +1000,7 @@ int try_to_force_load(struct module *mod
  	return -ENOEXEC;
  #endif
  }
@@ -143,7 +143,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -1817,7 +1817,9 @@ static void read_symbols(const char *modname)
+@@ -1817,7 +1817,9 @@ static void read_symbols(const char *mod
  		symname = remove_dot(info.strtab + sym->st_name);
  
  		handle_symbol(mod, &info, sym, symname);
@@ -153,7 +153,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	}
  
  	for (sym = info.symtab_start; sym < info.symtab_stop; sym++) {
-@@ -1980,8 +1982,10 @@ static void add_header(struct buffer *b, struct module *mod)
+@@ -1980,8 +1982,10 @@ static void add_header(struct buffer *b,
  	buf_printf(b, "BUILD_SALT;\n");
  	buf_printf(b, "BUILD_LTO_INFO;\n");
  	buf_printf(b, "\n");
@@ -164,7 +164,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	buf_printf(b, "\n");
  	buf_printf(b, "__visible struct module __this_module\n");
  	buf_printf(b, "__section(\".gnu.linkonce.this_module\") = {\n");
-@@ -1995,8 +1999,10 @@ static void add_header(struct buffer *b, struct module *mod)
+@@ -1995,8 +1999,10 @@ static void add_header(struct buffer *b,
  	buf_printf(b, "\t.arch = MODULE_ARCH_INIT,\n");
  	buf_printf(b, "};\n");
  
@@ -175,7 +175,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  	buf_printf(b,
  		   "\n"
-@@ -2004,8 +2010,10 @@ static void add_header(struct buffer *b, struct module *mod)
+@@ -2004,8 +2010,10 @@ static void add_header(struct buffer *b,
  		   "MODULE_INFO(retpoline, \"Y\");\n"
  		   "#endif\n");
  
@@ -186,7 +186,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  	if (strstarts(mod->name, "tools/testing"))
  		buf_printf(b, "\nMODULE_INFO(test, \"Y\");\n");
-@@ -2101,11 +2109,13 @@ static void add_depends(struct buffer *b, struct module *mod)
+@@ -2101,11 +2109,13 @@ static void add_depends(struct buffer *b
  
  static void add_srcversion(struct buffer *b, struct module *mod)
  {
@@ -200,7 +200,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  }
  
  static void write_buf(struct buffer *b, const char *fname)
-@@ -2191,7 +2201,9 @@ static void write_mod_c_file(struct module *mod)
+@@ -2191,7 +2201,9 @@ static void write_mod_c_file(struct modu
  	add_exported_symbols(&buf, mod);
  	add_versions(&buf, mod);
  	add_depends(&buf, mod);

@@ -10,8 +10,6 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Jonas Gorski <jogo@openwrt.org>
 Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
 ---
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 11ecf09aadc86..932af82742196 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
 @@ -122,6 +122,7 @@ config ARM
@@ -22,8 +20,6 @@ index 11ecf09aadc86..932af82742196 100644
  	select MODULES_USE_ELF_REL
  	select NEED_DMA_MAP_STATE
  	select OF_EARLY_FLATTREE if OF
-diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-index 41bcbb460fac4..b423fdc060e54 100644
 --- a/arch/arm/boot/compressed/Makefile
 +++ b/arch/arm/boot/compressed/Makefile
 @@ -91,6 +91,7 @@ endif
@@ -34,8 +30,6 @@ index 41bcbb460fac4..b423fdc060e54 100644
  
  OBJS	+= lib1funcs.o ashldi3.o bswapsdi2.o
  
-diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-index fad45c884e988..de1f6ddd716b0 100644
 --- a/arch/arm/include/asm/vmlinux.lds.h
 +++ b/arch/arm/include/asm/vmlinux.lds.h
 @@ -42,13 +42,13 @@
@@ -87,8 +81,6 @@ index fad45c884e988..de1f6ddd716b0 100644
  	}								\
  	ARM_LMA(__stubs, .stubs);					\
  	. = __stubs_lma + SIZEOF(.stubs);				\
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index aa12b65a7fd6a..bbac7ba87cf83 100644
 --- a/arch/arm/kernel/vmlinux.lds.S
 +++ b/arch/arm/kernel/vmlinux.lds.S
 @@ -75,7 +75,7 @@ SECTIONS

@@ -20,11 +20,9 @@ Link: https://lore.kernel.org/linux-mtd/Y1gCALFWXYYwqV1P@kili
  drivers/mtd/parsers/tplink_safeloader.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/parsers/tplink_safeloader.c b/drivers/mtd/parsers/tplink_safeloader.c
-index 23584a4773912d..f601e7bd862791 100644
 --- a/drivers/mtd/parsers/tplink_safeloader.c
 +++ b/drivers/mtd/parsers/tplink_safeloader.c
-@@ -23,8 +23,8 @@ static void *mtd_parser_tplink_safeloader_read_table(struct mtd_info *mtd)
+@@ -23,8 +23,8 @@ static void *mtd_parser_tplink_safeloade
  	struct safeloader_cmn_header hdr;
  	struct device_node *np;
  	size_t bytes_read;
@@ -34,7 +32,7 @@ index 23584a4773912d..f601e7bd862791 100644
  	char *buf;
  	int err;
  
-@@ -34,14 +34,14 @@ static void *mtd_parser_tplink_safeloader_read_table(struct mtd_info *mtd)
+@@ -34,14 +34,14 @@ static void *mtd_parser_tplink_safeloade
  	else
  		np = of_get_child_by_name(np, "partitions");
  
@@ -51,6 +49,3 @@ index 23584a4773912d..f601e7bd862791 100644
  		goto err_put;
  	}
  
--- 
-2.38.1
-

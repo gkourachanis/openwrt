@@ -19,11 +19,9 @@ Link: https://lore.kernel.org/linux-mtd/20221004083710.27704-1-zajec5@gmail.com
  drivers/mtd/mtdcore.c | 17 ++++++++---------
  1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 0b4ca0aa41321d..6ad62ff7be23d0 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -551,18 +551,17 @@ static void mtd_check_of_node(struct mtd_info *mtd)
+@@ -551,18 +551,17 @@ static void mtd_check_of_node(struct mtd
  	struct device_node *partitions, *parent_dn, *mtd_dn = NULL;
  	const char *pname, *prefix = "partition-";
  	int plen, mtd_name_len, offset, prefix_len;
@@ -45,7 +43,7 @@ index 0b4ca0aa41321d..6ad62ff7be23d0 100644
  	if (!parent_dn)
  		return;
  
-@@ -575,15 +574,15 @@ static void mtd_check_of_node(struct mtd_info *mtd)
+@@ -575,15 +574,15 @@ static void mtd_check_of_node(struct mtd
  
  	/* Search if a partition is defined with the same name */
  	for_each_child_of_node(partitions, mtd_dn) {
@@ -66,6 +64,3 @@ index 0b4ca0aa41321d..6ad62ff7be23d0 100644
  			offset = prefix_len;
  		}
  
--- 
-2.38.1
-

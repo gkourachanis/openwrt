@@ -31,7 +31,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	__u8			ipvs_property:1;
  	__u8			inner_protocol_type:1;
 --- a/net/core/gro.c
-+++ b/net/core/dev.c
++++ b/net/core/gro.c
 @@ -482,6 +482,9 @@ static enum gro_result dev_gro_receive(s
  	int same_flow;
  	int grow;
@@ -109,7 +109,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	call_netdevice_notifiers_info(NETDEV_CHANGEUPPER,
  				      &changeupper_info.info);
  
-@@ -8800,6 +8847,7 @@ int dev_set_mac_address(struct net_devic
+@@ -8800,6 +8844,7 @@ int dev_set_mac_address(struct net_devic
  	if (err)
  		return err;
  	dev->addr_assign_type = NET_ADDR_SET;

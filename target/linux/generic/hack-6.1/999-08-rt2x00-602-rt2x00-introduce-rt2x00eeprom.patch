@@ -1,6 +1,6 @@
 --- a/drivers/net/wireless/ralink/rt2x00/Kconfig
 +++ b/drivers/net/wireless/ralink/rt2x00/Kconfig
-@@ -65,6 +65,7 @@
+@@ -65,6 +65,7 @@ config RT2800PCI
  	select RT2X00_LIB_MMIO
  	select RT2X00_LIB_PCI
  	select RT2X00_LIB_FIRMWARE
@@ -8,7 +8,7 @@
  	select RT2X00_LIB_CRYPTO
  	select CRC_CCITT
  	select EEPROM_93CX6
-@@ -207,6 +208,7 @@
+@@ -207,6 +208,7 @@ config RT2800SOC
  	select RT2X00_LIB_MMIO
  	select RT2X00_LIB_CRYPTO
  	select RT2X00_LIB_FIRMWARE
@@ -16,7 +16,7 @@
  	select RT2800_LIB
  	select RT2800_LIB_MMIO
  	help
-@@ -249,6 +251,9 @@
+@@ -249,6 +251,9 @@ config RT2X00_LIB_FIRMWARE
  
  config RT2X00_LIB_CRYPTO
  	bool

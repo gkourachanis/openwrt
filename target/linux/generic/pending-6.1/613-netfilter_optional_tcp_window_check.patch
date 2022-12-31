@@ -9,7 +9,7 @@ Signed-off-by: Christian 'Ansuel' Marangi <ansuelsmth@gmail.com>
 
 --- a/net/netfilter/nf_conntrack_proto_tcp.c
 +++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -518,6 +518,12 @@ static bool tcp_in_window(struct nf_conn
+@@ -518,6 +518,12 @@ tcp_in_window(struct nf_conn *ct, enum i
  	s32 receiver_offset;
  	u16 win_raw;
  

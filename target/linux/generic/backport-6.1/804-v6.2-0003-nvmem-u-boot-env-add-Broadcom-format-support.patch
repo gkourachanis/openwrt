@@ -21,8 +21,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  drivers/nvmem/u-boot-env.c | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/drivers/nvmem/u-boot-env.c b/drivers/nvmem/u-boot-env.c
-index 4fdbdccebda16e..29b1d87a3c5155 100644
 --- a/drivers/nvmem/u-boot-env.c
 +++ b/drivers/nvmem/u-boot-env.c
 @@ -16,6 +16,7 @@
@@ -47,7 +45,7 @@ index 4fdbdccebda16e..29b1d87a3c5155 100644
  static int u_boot_env_read(void *context, unsigned int offset, void *val,
  			   size_t bytes)
  {
-@@ -138,6 +146,11 @@ static int u_boot_env_parse(struct u_boot_env *priv)
+@@ -138,6 +146,11 @@ static int u_boot_env_parse(struct u_boo
  		crc32_data_offset = offsetof(struct u_boot_env_image_redundant, data);
  		data_offset = offsetof(struct u_boot_env_image_redundant, data);
  		break;
@@ -59,7 +57,7 @@ index 4fdbdccebda16e..29b1d87a3c5155 100644
  	}
  	crc32 = le32_to_cpu(*(__le32 *)(buf + crc32_offset));
  	crc32_data_len = priv->mtd->size - crc32_data_offset;
-@@ -202,6 +215,7 @@ static const struct of_device_id u_boot_env_of_match_table[] = {
+@@ -202,6 +215,7 @@ static const struct of_device_id u_boot_
  	{ .compatible = "u-boot,env", .data = (void *)U_BOOT_FORMAT_SINGLE, },
  	{ .compatible = "u-boot,env-redundant-bool", .data = (void *)U_BOOT_FORMAT_REDUNDANT, },
  	{ .compatible = "u-boot,env-redundant-count", .data = (void *)U_BOOT_FORMAT_REDUNDANT, },
@@ -67,6 +65,3 @@ index 4fdbdccebda16e..29b1d87a3c5155 100644
  	{},
  };
  
--- 
-2.38.1
-

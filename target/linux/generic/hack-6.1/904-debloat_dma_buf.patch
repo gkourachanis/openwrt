@@ -5,7 +5,6 @@ Subject: debloat: dmabuf
 
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 
-diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
 --- a/drivers/base/Kconfig
 +++ b/drivers/base/Kconfig
 @@ -198,7 +198,7 @@ config SOC_BUS
@@ -17,7 +16,6 @@ diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
  	default n
  	select IRQ_WORK
  	help
-diff --git a/drivers/dma-buf/Makefile b/drivers/dma-buf/Makefile
 --- a/drivers/dma-buf/Makefile
 +++ b/drivers/dma-buf/Makefile
 @@ -1,6 +1,17 @@
@@ -40,7 +38,6 @@ diff --git a/drivers/dma-buf/Makefile b/drivers/dma-buf/Makefile
  obj-$(CONFIG_DMABUF_HEAPS)	+= dma-heap.o
  obj-$(CONFIG_DMABUF_HEAPS)	+= heaps/
  obj-$(CONFIG_SYNC_FILE)		+= sync_file.o
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
 --- a/drivers/dma-buf/dma-buf.c
 +++ b/drivers/dma-buf/dma-buf.c
 @@ -1589,4 +1589,5 @@ static void __exit dma_buf_deinit(void)
@@ -50,7 +47,6 @@ diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
 -__exitcall(dma_buf_deinit);
 +module_exit(dma_buf_deinit);
 +MODULE_LICENSE("GPL");
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
 @@ -4331,6 +4331,7 @@ int wake_up_state(struct task_struct *p,
@@ -61,10 +57,9 @@ diff --git a/kernel/sched/core.c b/kernel/sched/core.c
  
  /*
   * Perform scheduler related setup for a newly forked process p.
-diff --git a/fs/d_path.c b/fs/d_path.c
 --- a/fs/d_path.c
 +++ b/fs/d_path.c
-@@ -313,6 +313,7 @@ char *dynamic_dname(struct dentry *dentr
+@@ -313,6 +313,7 @@ char *dynamic_dname(char *buffer, int bu
  	buffer += buflen - sz;
  	return memcpy(buffer, temp, sz);
  }

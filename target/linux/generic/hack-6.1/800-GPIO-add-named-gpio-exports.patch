@@ -105,7 +105,7 @@ Signed-off-by: John Crispin <blogic@openwrt.org>
  {
 --- a/include/linux/gpio/consumer.h
 +++ b/include/linux/gpio/consumer.h
-@@ -715,6 +715,7 @@ static inline void devm_acpi_dev_remove_
+@@ -715,6 +715,7 @@ static inline struct gpio_desc *acpi_get
  
  #if IS_ENABLED(CONFIG_GPIOLIB) && IS_ENABLED(CONFIG_GPIO_SYSFS)
  

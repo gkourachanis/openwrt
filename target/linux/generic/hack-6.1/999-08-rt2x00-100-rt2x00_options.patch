@@ -1,6 +1,6 @@
 --- a/drivers/net/wireless/ralink/rt2x00/Kconfig
 +++ b/drivers/net/wireless/ralink/rt2x00/Kconfig
-@@ -217,30 +217,31 @@
+@@ -217,30 +217,31 @@ config RT2800SOC
  
  
  config RT2800_LIB

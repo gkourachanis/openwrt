@@ -24,8 +24,6 @@ Link: https://lore.kernel.org/linux-mtd/20221114090315.848208-3-miquel.raynal@bo
  7 files changed, 6 insertions(+), 42 deletions(-)
  delete mode 100644 Documentation/devicetree/bindings/mtd/partition.txt
 
-diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
-index 3aa297c97ab617..50645828ac20aa 100644
 --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
 +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
 @@ -45,10 +45,8 @@ Optional properties:
@@ -41,8 +39,6 @@ index 3aa297c97ab617..50645828ac20aa 100644
  
  * ECC engine (PMECC) bindings:
  
-diff --git a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
-index 8c272c842bfd3e..87b2944d0d1b5f 100644
 --- a/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
 +++ b/Documentation/devicetree/bindings/mtd/ingenic,nand.yaml
 @@ -34,7 +34,6 @@ properties:
@@ -53,8 +49,6 @@ index 8c272c842bfd3e..87b2944d0d1b5f 100644
  
  patternProperties:
    "^nand@[a-f0-9]$":
-diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
-index 6d60bc3063f51b..64c06aa05ac713 100644
 --- a/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
 +++ b/Documentation/devicetree/bindings/mtd/lpc32xx-mlc.txt
 @@ -19,7 +19,7 @@ accuracy:)
@@ -66,8 +60,6 @@ index 6d60bc3063f51b..64c06aa05ac713 100644
  
  Example:
  
-diff --git a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
-index d94edc0fc554bf..39f17630a3011f 100644
 --- a/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
 +++ b/Documentation/devicetree/bindings/mtd/lpc32xx-slc.txt
 @@ -20,7 +20,7 @@ clock speed:)
@@ -79,8 +71,6 @@ index d94edc0fc554bf..39f17630a3011f 100644
  
  Example:
  
-diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-index 4d3ec5e4ff8a31..839ea2f93d043a 100644
 --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
 +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
 @@ -131,7 +131,7 @@ Example:
@@ -92,9 +82,6 @@ index 4d3ec5e4ff8a31..839ea2f93d043a 100644
  
  Example:
  	nand@0 {
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-deleted file mode 100644
-index ead90e8274d6c7..00000000000000
 --- a/Documentation/devicetree/bindings/mtd/partition.txt
 +++ /dev/null
 @@ -1,33 +0,0 @@
@@ -131,8 +118,6 @@ index ead90e8274d6c7..00000000000000
 -supported. This use is discouraged.
 -NOTE: also for backwards compatibility, direct subnodes that have a compatible
 -string are not considered partitions, as they may be used for other bindings.
-diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
-index c258ba2a3a6f43..00dfdc934ac89b 100644
 --- a/drivers/mtd/parsers/Kconfig
 +++ b/drivers/mtd/parsers/Kconfig
 @@ -75,7 +75,7 @@ config MTD_OF_PARTS
@@ -144,6 +129,3 @@ index c258ba2a3a6f43..00dfdc934ac89b 100644
  
  config MTD_OF_PARTS_BCM4908
  	bool "BCM4908 partitioning support"
--- 
-2.38.1
-
