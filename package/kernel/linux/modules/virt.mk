@@ -60,11 +60,10 @@ $(eval $(call KernelPackage,kvm-intel))
 define KernelPackage/kvm-amd
   SUBMENU:=Virtualization
   TITLE:=KVM for AMD processors support
-  DEPENDS:=+kmod-kvm-x86
+  DEPENDS:=+kmod-kvm-x86 +kmod-crypto-hw-ccp
   KCONFIG:=CONFIG_KVM_AMD
   FILES:= $(LINUX_DIR)/arch/$(LINUX_KARCH)/kvm/kvm-amd.ko
   AUTOLOAD:=$(call AutoProbe,kvm-amd.ko)
-  FILES+=$(LINUX_DIR)/drivers/crypto/ccp/ccp.ko
 endef
 
 define KernelPackage/kvm-amd/description

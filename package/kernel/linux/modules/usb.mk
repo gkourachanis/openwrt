@@ -429,7 +429,8 @@ $(eval $(call KernelPackage,usb2-pci))
 
 define KernelPackage/usb-dwc2
   TITLE:=DWC2 USB controller driver
-  DEPENDS:=+USB_GADGET_SUPPORT:kmod-usb-gadget +kmod-usb-roles
+  DEPENDS:=+USB_GADGET_SUPPORT:kmod-usb-gadget +kmod-usb-roles \
+	+kmod-usb-gadget
   KCONFIG:= \
 	CONFIG_USB_DWC2 \
 	CONFIG_USB_DWC2_DEBUG=n \
@@ -440,7 +441,6 @@ define KernelPackage/usb-dwc2
 	$(LINUX_DIR)/drivers/usb/dwc2/dwc2.ko
   AUTOLOAD:=$(call AutoLoad,54,dwc2,1)
   $(call AddDepends/usb)
-  FILES+=$(LINUX_DIR)/drivers/usb/gadget/udc/udc-core.ko
 endef
 
 define KernelPackage/usb-dwc2/description
@@ -764,11 +764,11 @@ $(eval $(call KernelPackage,usb-serial-mct))
 
 define KernelPackage/usb-serial-mos7720
   TITLE:=Support for Moschip MOS7720 devices
+  DEPENDS:=+kmod-ppdev
   KCONFIG:=CONFIG_USB_SERIAL_MOS7720
   FILES:=$(LINUX_DIR)/drivers/usb/serial/mos7720.ko
   AUTOLOAD:=$(call AutoProbe,mos7720)
   $(call AddDepends/usb-serial)
-  FILES+=$(LINUX_DIR)/drivers/parport/parport.ko
 endef
 
 define KernelPackage/usb-serial-mos7720/description
@@ -1747,6 +1747,7 @@ define KernelPackage/usb3
   TITLE:=Support for USB3 controllers
   DEPENDS:= \
 	+kmod-usb-xhci-hcd \
+	+kmod-usb-xhci-pci-renesas \
 	+TARGET_bcm53xx:kmod-usb-bcma \
 	+TARGET_bcm53xx:kmod-phy-bcm-ns-usb3 \
 	+TARGET_ramips_mt7621:kmod-usb-xhci-mtk \
@@ -1761,7 +1762,6 @@ define KernelPackage/usb3
 	$(XHCI_FILES)
   AUTOLOAD:=$(call AutoLoad,54,$(XHCI_AUTOLOAD),1)
   $(call AddDepends/usb)
-  FILES+=$(LINUX_DIR)/drivers/usb/host/xhci-pci-renesas.ko
 endef
 
 define KernelPackage/usb3/description

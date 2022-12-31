@@ -580,7 +580,8 @@ $(eval $(call KernelPackage,softdog))
 define KernelPackage/ssb
   SUBMENU:=$(OTHER_MENU)
   TITLE:=Silicon Sonics Backplane glue code
-  DEPENDS:=@PCI_SUPPORT @!TARGET_bcm47xx @!TARGET_bcm63xx
+  DEPENDS:=@PCI_SUPPORT @!TARGET_bcm47xx @!TARGET_bcm63xx \
+	+kmod-pcmcia-core +kmod-mmc
   KCONFIG:=\
 	CONFIG_SSB \
 	CONFIG_SSB_B43_PCI_BRIDGE=y \
@@ -594,9 +595,6 @@ define KernelPackage/ssb
 	CONFIG_SSB_SILENT=y
   FILES:=$(LINUX_DIR)/drivers/ssb/ssb.ko
   AUTOLOAD:=$(call AutoLoad,18,ssb,1)
-  FILES+=$(LINUX_DIR)/drivers/pcmcia/pcmcia.ko
-  FILES+=$(LINUX_DIR)/drivers/mmc/core/mmc_core.ko
-  FILES+=$(LINUX_DIR)/drivers/pcmcia/pcmcia_core.ko
 endef
 
 define KernelPackage/ssb/description
