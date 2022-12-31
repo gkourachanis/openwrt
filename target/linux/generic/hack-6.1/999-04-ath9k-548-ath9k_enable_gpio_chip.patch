@@ -10,7 +10,16 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
 --- a/drivers/net/wireless/ath/ath9k/ath9k.h
 +++ b/drivers/net/wireless/ath/ath9k/ath9k.h
-@@ -24,6 +24,7 @@
+@@ -17,6 +17,8 @@
+ #ifndef ATH9K_H
+ #define ATH9K_H
+ 
++#include <linux/version.h>
++
+ #include <linux/etherdevice.h>
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
+@@ -24,6 +26,7 @@
  #include <linux/completion.h>
  #include <linux/time.h>
  #include <linux/hw_random.h>
@@ -18,7 +27,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  #include "common.h"
  #include "debug.h"
-@@ -989,6 +990,14 @@ struct ath_led {
+@@ -989,6 +992,14 @@ struct ath_led {
  	struct led_classdev cdev;
  };
  
@@ -33,7 +42,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  struct ath_softc {
  	struct ieee80211_hw *hw;
  	struct device *dev;
-@@ -1044,6 +1053,9 @@ struct ath_softc {
+@@ -1044,6 +1055,9 @@ struct ath_softc {
  #ifdef CONFIG_MAC80211_LEDS
  	const char *led_default_trigger;
  	struct list_head leds;
@@ -127,11 +136,11 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
 +	snprintf(gc->label, sizeof(gc->label), "ath9k-%s",
 +		 wiphy_name(sc->hw->wiphy));
 +#ifdef CONFIG_OF
-+// #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0)
 +	gc->gchip.parent = sc->dev;
-+// #else
-+// 	gc->gchip.dev = sc->dev;
-+// #endif
++#else
++	gc->gchip.dev = sc->dev;
++#endif
 +#endif
 +	gc->gchip.label = gc->label;
 +	gc->gchip.base = -1;	/* determine base automatically */
