@@ -2,9 +2,8 @@
 
 The patches that I've added on the v6.1 apply properly, but I'm not sure if they are all needed.
 Plus I only care about wired connections on x86_64 and most of them I haven't given much attention on what they do.
-The modules compile without errors.
+(Most of) the modules compile without errors.
 I've used this .config file for the kernel and modules compilation.
-I don't compile the whole OpenWrt OS.
 
 * [.config](https://gist.github.com/gkourachanis/b332097e9448c387a2ff778b1dbb7787)
 
