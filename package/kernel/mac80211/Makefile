@@ -294,24 +294,8 @@ config-$(call config_package,rsi91x-sdio) += RSI_SDIO
 
 config-$(CONFIG_LEDS_TRIGGERS) += MAC80211_LEDS
 
-C_DEFINES=
-
-ifeq ($(BUILD_VARIANT),smallbuffers)
-	C_DEFINES+= -DCONFIG_ATH10K_SMALLBUFFERS
-endif
-
-MAKE_OPTS:= \
-	$(subst -C $(LINUX_DIR),-C "$(PKG_BUILD_DIR)",$(KERNEL_MAKEOPTS)) \
-	EXTRA_CFLAGS="-I$(PKG_BUILD_DIR)/include $(IREMAP_CFLAGS) $(C_DEFINES)" \
-	KLIB_BUILD="$(LINUX_DIR)" \
-	MODPROBE=true \
-	KLIB=$(TARGET_MODULES_DIR) \
-	KERNEL_SUBLEVEL=$(lastword $(subst ., ,$(KERNEL_PATCHVER))) \
-	KBUILD_LDFLAGS_MODULE_PREREQ=
-
 define ConfigVars
-$(subst $(space),,$(foreach opt,$(config-$(1)),CPTCFG_$(opt)=$(1)
-))
+$(subst $(space),,$(foreach opt,$(config-$(1)),CONFIG_$(opt)=$(1)))
 endef
 
 define mac80211_config
@@ -319,95 +303,9 @@ $(call ConfigVars,m)$(call ConfigVars,y)
 endef
 $(eval $(call shexport,mac80211_config))
 
-define Build/Prepare
-	rm -rf $(PKG_BUILD_DIR)
-	mkdir -p $(PKG_BUILD_DIR)
-	$(PKG_UNPACK)
-	$(Build/Patch)
-	rm -rf \
-		$(PKG_BUILD_DIR)/include/linux/ssb \
-		$(PKG_BUILD_DIR)/include/linux/bcma \
-		$(PKG_BUILD_DIR)/include/net/bluetooth
-
-	rm -f \
-		$(PKG_BUILD_DIR)/include/linux/cordic.h \
-		$(PKG_BUILD_DIR)/include/linux/crc8.h \
-		$(PKG_BUILD_DIR)/include/linux/eeprom_93cx6.h \
-		$(PKG_BUILD_DIR)/include/linux/wl12xx.h \
-		$(PKG_BUILD_DIR)/include/linux/mhi.h \
-		$(PKG_BUILD_DIR)/include/net/ieee80211.h \
-		$(PKG_BUILD_DIR)/backport-include/linux/bcm47xx_nvram.h
-
-	echo 'compat-wireless-$(PKG_VERSION)-$(PKG_RELEASE)-$(REVISION)' > $(PKG_BUILD_DIR)/compat_version
-endef
-
-ifneq ($(CONFIG_PACKAGE_kmod-cfg80211),)
- define Build/Compile/kmod
-	rm -rf $(PKG_BUILD_DIR)/modules
-	+$(MAKE) $(PKG_JOBS) $(MAKE_OPTS) modules
- endef
-endif
-
-#do not Build/Configure for EXTERNAL KERNEL
-ifeq ($(strip $(CONFIG_EXTERNAL_KERNEL_TREE)),"")
-  ifeq ($(strip $(CONFIG_KERNEL_GIT_CLONE_URI)),"")
-    define Build/Configure
-	  cmp $(PKG_BUILD_DIR)/include/linux/ath9k_platform.h $(LINUX_DIR)/include/linux/ath9k_platform.h
-	  cmp $(PKG_BUILD_DIR)/include/linux/ath5k_platform.h $(LINUX_DIR)/include/linux/ath5k_platform.h
-	  cmp $(PKG_BUILD_DIR)/include/linux/rt2x00_platform.h $(LINUX_DIR)/include/linux/rt2x00_platform.h
-    endef
-  endif
-endif
-
-define Build/Patch
-	$(if $(QUILT),rm -rf $(PKG_BUILD_DIR)/patches; mkdir -p $(PKG_BUILD_DIR)/patches)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/build,build/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/subsys,subsys/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath,ath/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath5k,ath5k/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath9k,ath9k/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath10k,ath10k/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath11k,ath11k/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/rt2x00,rt2x00/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/mwl,mwl/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/brcm,brcm/)
-	$(call PatchDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/rtl,rtl/)
-	$(if $(QUILT),touch $(PKG_BUILD_DIR)/.quilt_used)
-endef
-
-define Quilt/Refresh/Package
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/build,build/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/subsys,subsys/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath,ath/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath5k,ath5k/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath9k,ath9k/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath10k,ath10k/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/ath11k,ath11k/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/rt2x00,rt2x00/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/mwl,mwl/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/brcm,brcm/)
-	$(call Quilt/RefreshDir,$(PKG_BUILD_DIR),$(PATCH_DIR)/rtl,rtl/)
-endef
-
 define Build/Compile
 	$(SH_FUNC) var2file "$(call shvar,mac80211_config)" $(PKG_BUILD_DIR)/.config
-	$(MAKE) $(MAKE_OPTS) allnoconfig
-	$(call Build/Compile/kmod)
 endef
-
-define Build/InstallDev
-	mkdir -p \
-		$(1)/usr/include/mac80211 \
-		$(1)/usr/include/mac80211-backport \
-		$(1)/usr/include/mac80211/ath \
-		$(1)/usr/include/net/mac80211
-	$(CP) $(PKG_BUILD_DIR)/net/mac80211/*.h $(PKG_BUILD_DIR)/include/* $(1)/usr/include/mac80211/
-	$(CP) $(PKG_BUILD_DIR)/backport-include/* $(1)/usr/include/mac80211-backport/
-	$(CP) $(PKG_BUILD_DIR)/net/mac80211/rate.h $(1)/usr/include/net/mac80211/
-	$(CP) $(PKG_BUILD_DIR)/drivers/net/wireless/ath/*.h $(1)/usr/include/mac80211/ath/
-	rm -f $(1)/usr/include/mac80211-backport/linux/module.h
-endef
-
 
 define KernelPackage/cfg80211/install
 	$(INSTALL_DIR) $(1)/lib/wifi $(1)/lib/netifd/wireless
