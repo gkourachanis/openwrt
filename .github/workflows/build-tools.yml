@@ -1,6 +1,10 @@
 name: Build host tools
 
 on:
+  workflow_dispatch:
+    inputs:
+      generate_prebuilt_artifacts:
+        type: boolean
   workflow_call:
     inputs:
       generate_prebuilt_artifacts:
