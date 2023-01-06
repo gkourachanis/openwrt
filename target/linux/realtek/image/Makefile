@@ -3,8 +3,8 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
-KERNEL_LOADADDR = 0x80000000
-KERNEL_ENTRY = 0x80000400
+KERNEL_LOADADDR = 0x80100000
+KERNEL_ENTRY = 0x80100400
 
 DEVICE_VARS += \
         CAMEO_BOARD_VERSION \
@@ -90,12 +90,12 @@ define Device/Default
   KERNEL := \
 	kernel-bin | \
 	append-dtb | \
-	gzip | \
+	libdeflate-gzip | \
 	uImage gzip
   KERNEL_INITRAMFS := \
 	kernel-bin | \
 	append-dtb | \
-	gzip | \
+	libdeflate-gzip | \
 	uImage gzip
   DEVICE_DTS_DIR := ../dts-$(KERNEL_PATCHVER)
   DEVICE_DTS = $$(SOC)_$(1)
