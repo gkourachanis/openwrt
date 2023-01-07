@@ -8,13 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=binutils
-PKG_VERSION:=2.39
-PKG_RELEASE:=1
+PKG_VERSION:=2.40
+PKG_RELEASE:=$(AUTORELEASE)
 
-PKG_SOURCE_URL:=@GNU/binutils
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.xz
-PKG_VERSION:=$(PKG_VERSION)
-PKG_HASH:=645c25f563b8adc0a81dbd6a41cffbf4d37083a382e02d5d3df4f65c09516d00
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL=https://sourceware.org/git/binutils-gdb.git
+PKG_SOURCE_DATE:=2023-01-06
+PKG_SOURCE_VERSION:=dcd469925324f430e8cf656c7f63538dd7a01d08
+PKG_MIRROR_HASH:=bfa214b151ce9f7f75bac9808372c59cfc04c00798f6315f0f0b507edacea50c
 
 PKG_FIXUP:=patch-libtool
 PKG_LIBTOOL_PATHS:=. gas bfd opcodes gprof binutils ld libiberty gold intl
@@ -30,11 +31,17 @@ PKG_USE_MIPS16:=0
 include $(INCLUDE_DIR)/nls.mk
 include $(INCLUDE_DIR)/package.mk
 
+define Package/libsframe
+  SECTION:=libs
+  CATEGORY:=Libraries
+  TITLE:=libsframe
+endef
+
 define Package/libbfd
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=libbfd
-  DEPENDS:=+zlib $(INTL_DEPENDS)
+  DEPENDS:=+libsframe +zlib $(INTL_DEPENDS)
 endef
 
 define Package/libctf
@@ -55,7 +62,7 @@ define Package/binutils
   SECTION:=devel
   CATEGORY:=Development
   TITLE:=binutils
-  DEPENDS:=+objdump +ar
+  DEPENDS:=+objdump +ar +libgmp +libmpfr +libncurses +libstdcpp
   ALTERNATIVES:=200:/usr/bin/strings:/usr/bin/binutils-strings
 endef
 
@@ -77,7 +84,7 @@ define Package/binutils/description
   The Binutils package contains a linker, an assembler, and other tools for handling object files
 endef
 
-TARGET_CFLAGS += $(FPIC) -Wno-unused-value
+TARGET_CFLAGS += $(FPIC) -Wno-unused-value -Wno-error=return-local-addr
 
 TARGET_LDFLAGS += $(if $(INTL_FULL),-lintl)
 
@@ -85,6 +92,7 @@ CONFIGURE_ARGS += \
 	--host=$(REAL_GNU_TARGET_NAME) \
 	--target=$(REAL_GNU_TARGET_NAME) \
 	--enable-shared \
+	--disable-gprofng-tools \
 	--enable-install-libiberty \
 	--enable-install-libbfd \
 	--enable-install-libctf
@@ -100,6 +108,11 @@ endef
 
 define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
+endef
+
+define Package/libsframe/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(PKG_INSTALL_DIR)/usr/lib/libsframe*.so* $(1)/usr/lib/
 endef
 
 define Package/libbfd/install
@@ -135,6 +148,7 @@ define Package/binutils/install
 	rm -f $(1)/usr/bin/ar
 endef
 
+$(eval $(call BuildPackage,libsframe))
 $(eval $(call BuildPackage,libbfd))
 $(eval $(call BuildPackage,libctf))
 $(eval $(call BuildPackage,libopcodes))
