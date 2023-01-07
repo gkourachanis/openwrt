@@ -367,6 +367,58 @@ define Package/libgfortran/config
 	endmenu
 endef
 
+define Package/libitm
+$(call Package/gcc/Default)
+  DEPENDS:=+libgcc
+  TITLE:=GNU Transactional Memory Library
+endef
+
+define Package/libitm/config
+	menu "Configuration"
+		depends on EXTERNAL_TOOLCHAIN && PACKAGE_libitm
+
+	config LIBITM_ROOT_DIR
+		string
+		prompt "libitm shared library base directory"
+		depends on EXTERNAL_TOOLCHAIN && PACKAGE_libitm
+		default TOOLCHAIN_ROOT  if !NATIVE_TOOLCHAIN
+		default "/"  if NATIVE_TOOLCHAIN
+
+	config LIBITM_FILE_SPEC
+		string
+		prompt "libitm shared library files (use wildcards)"
+		depends on EXTERNAL_TOOLCHAIN && PACKAGE_libitm
+		default "./lib/libitm.so.*"
+
+	endmenu
+endef
+
+define Package/libquadmath
+$(call Package/gcc/Default)
+  DEPENDS:=+libgcc
+  TITLE:=GCC Quad-Precision Math Library
+endef
+
+define Package/libquadmath/config
+	menu "Configuration"
+		depends on EXTERNAL_TOOLCHAIN && PACKAGE_libquadmath
+
+	config LIBQUADMATH_ROOT_DIR
+		string
+		prompt "libquadmath shared library base directory"
+		depends on EXTERNAL_TOOLCHAIN && PACKAGE_libquadmath
+		default TOOLCHAIN_ROOT  if !NATIVE_TOOLCHAIN
+		default "/"  if NATIVE_TOOLCHAIN
+
+	config LIBQUADMATH_FILE_SPEC
+		string
+		prompt "libquadmath shared library files (use wildcards)"
+		depends on EXTERNAL_TOOLCHAIN && PACKAGE_libquadmath
+		default "./lib/libquadmath.so.*"
+
+	endmenu
+endef
+
 define Package/libgomp
 $(call Package/gcc/Default)
   TITLE:=OpenMP support library
@@ -485,6 +537,16 @@ ifeq ($(CONFIG_EXTERNAL_TOOLCHAIN),)
   define Package/libgfortran/install
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(CP) $(TOOLCHAIN_DIR)/lib/libgfortran.so.* $(1)/usr/lib/
+  endef
+
+  define Package/libitm/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(TOOLCHAIN_DIR)/lib/libitm.so.* $(1)/usr/lib/
+  endef
+
+  define Package/libquadmath/install
+	$(INSTALL_DIR) $(1)/usr/lib
+	$(CP) $(TOOLCHAIN_DIR)/lib/libquadmath.so.* $(1)/usr/lib/
   endef
 
   define Package/libstdcpp/install
@@ -612,6 +674,20 @@ else
 	done
   endef
 
+  define Package/libitm/install
+	for file in $(call qstrip,$(CONFIG_LIBITM_FILE_SPEC)); do \
+		$(INSTALL_DIR) $(1)/lib ; \
+		$(CP) $(call qstrip,$(CONFIG_LIBITM_ROOT_DIR))/$$$$file $(1)/lib/ ; \
+	done
+  endef
+
+  define Package/libquadmath/install
+	for file in $(call qstrip,$(CONFIG_LIBQUADMATH_FILE_SPEC)); do \
+		$(INSTALL_DIR) $(1)/lib ; \
+		$(CP) $(call qstrip,$(CONFIG_LIBQUADMATH_ROOT_DIR))/$$$$file $(1)/lib/ ; \
+	done
+  endef
+
   define Package/libstdcpp/install
 	for file in $(call qstrip,$(CONFIG_LIBSTDCPP_FILE_SPEC)); do \
 		$(INSTALL_DIR) $(1)/lib ; \
@@ -732,6 +808,8 @@ $(eval $(call BuildPackage,libpthread))
 $(eval $(call BuildPackage,libthread-db))
 $(eval $(call BuildPackage,librt))
 $(eval $(call BuildPackage,libgfortran))
+$(eval $(call BuildPackage,libitm))
+$(eval $(call BuildPackage,libquadmath))
 $(eval $(call BuildPackage,libgomp))
 $(eval $(call BuildPackage,ldd))
 $(eval $(call BuildPackage,ldconfig))
